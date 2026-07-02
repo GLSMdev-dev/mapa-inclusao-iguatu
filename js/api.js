@@ -9,6 +9,8 @@ class FirebaseAPI {
   constructor() {
     this.db = null;
     this.storage = null;
+    this.auth = null;
+    this.user = null;
     this.collection = "localizacoes";
     this.categoriesCollection = "categorias";
     this.initialized = false;
@@ -45,6 +47,12 @@ class FirebaseAPI {
       // Inicializar Storage
       this.storage = firebase.storage();
 
+      // Inicializar autenticação para permitir escrita quando as regras exigirem login
+      this.auth = firebase.auth();
+      this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch((err) => {
+        Logger.warn("Não foi possível definir persistência de autenticação", err);
+      });
+
       this.initialized = true;
       Logger.info("Firebase inicializado com sucesso");
       return true;
@@ -63,6 +71,26 @@ class FirebaseAPI {
     }
   }
 
+  async ensureAuthenticated() {
+    if (!this.auth) {
+      return null;
+    }
+
+    if (this.user) {
+      return this.user;
+    }
+
+    try {
+      const result = await this.auth.signInAnonymously();
+      this.user = result.user;
+      Logger.info("Autenticação anônima do Firebase ativada");
+      return this.user;
+    } catch (error) {
+      Logger.warn("Não foi possível autenticar anonimamente no Firebase", error);
+      return null;
+    }
+  }
+
   // ===== CRUD - Localizações =====
 
   /**
@@ -70,6 +98,7 @@ class FirebaseAPI {
    */
   async create(locationData) {
     this.checkInitialized();
+    await this.ensureAuthenticated();
     Logger.info("Criando nova localização", locationData);
 
     try {
@@ -220,6 +249,7 @@ class FirebaseAPI {
    */
   async update(id, data) {
     this.checkInitialized();
+    await this.ensureAuthenticated();
     Logger.info(`Atualizando localização ${id}`, data);
 
     try {
@@ -362,6 +392,7 @@ class FirebaseAPI {
    */
   async uploadMultipleImages(files, locationId) {
     this.checkInitialized();
+    await this.ensureAuthenticated();
     Logger.info(`Fazendo upload de ${files.length} imagens para ${locationId}`);
 
     try {
@@ -406,6 +437,7 @@ class FirebaseAPI {
    */
   async getCategories() {
     this.checkInitialized();
+    await this.ensureAuthenticated();
     Logger.info("Buscando categorias");
 
     try {

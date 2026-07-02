@@ -124,7 +124,7 @@ class MapaAppClass {
         iconAnchor: [16, 16],
       });
 
-      const marker = L.marker([lat, lng], { icon }).addTo(this.markersLayer);
+      const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(this.markersLayer);
       marker.bindPopup(`<strong>${Utils.sanitizeHTML(location.titulo || "Localização")}</strong>`);
 
       marker.on("click", () => {
