@@ -19,7 +19,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Inicializar categorias
     const categories = await API.createDefaultCategories();
-    MapaApp.setCategories(categories);
+    if (window.MapaApp) {
+      MapaApp.setCategories(categories);
+    }
 
     // Obter ID da URL
     const urlParams = Utils.getURLParams();
@@ -98,7 +100,7 @@ function populateDetails(location) {
   document.getElementById("detailTitulo").textContent =
     location.titulo || "Sem título";
 
-  const category = MapaApp.categories.find((c) => c.id === location.categoria);
+  const category = window.MapaApp?.categories?.find((c) => c.id === location.categoria);
   const categoryName = category ? category.nome : location.categoria;
   const categoryColor = location.cor_pin || (category ? category.cor : "#3498db");
   const categoryIcon = category ? category.icone : "📍";
@@ -201,8 +203,8 @@ function setupDetailMap(location) {
   }).addTo(map);
 
   // Adicionar marcador
-  const categoryColor = MapaApp.getCategoryColor(location.categoria);
-  const categoryIcon = MapaApp.getCategoryIcon(location.categoria);
+  const categoryColor = window.MapaApp?.getCategoryColor?.(location.categoria) || location.cor_pin || "#3498db";
+  const categoryIcon = window.MapaApp?.getCategoryIcon?.(location.categoria) || "📍";
 
   const icon = L.divIcon({
     className: "detail-marker",
