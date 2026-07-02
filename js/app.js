@@ -344,17 +344,12 @@ async function handleSubmit(event) {
       horario_funcionamento: "",
     };
 
-    let imageUrls = [];
-    if (APP_STATE.uploadFiles.length) {
-      const newImageUrls = await API.uploadMultipleImages(
-        APP_STATE.uploadFiles,
-        Utils.generateId(),
-      );
-      imageUrls.push(...newImageUrls);
-    }
-
-    locationData.imagens = imageUrls;
-    const result = await API.create(locationData);
+    const result = await API.saveLocation(
+      locationData,
+      null,
+      APP_STATE.uploadFiles,
+      [],
+    );
 
     Utils.showNotification("Ação inclusiva cadastrada com sucesso", "success");
     form.reset();

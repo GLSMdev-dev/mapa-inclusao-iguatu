@@ -76,6 +76,7 @@ class FirebaseAPI {
       // Preparar dados
       const data = {
         ...locationData,
+        imagens: locationData.imagens || [],
         data_criacao: firebase.firestore.FieldValue.serverTimestamp(),
         data_atualizacao: firebase.firestore.FieldValue.serverTimestamp(),
         status: "ativo",
@@ -97,6 +98,45 @@ class FirebaseAPI {
       };
     } catch (error) {
       Logger.error("Erro ao criar localização", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Salva uma localização e, se houver arquivos, envia as imagens para o Storage.
+   */
+  async saveLocation(locationData, existingId = null, files = [], existingImages = []) {
+    this.checkInitialized();
+
+    const normalizedData = {
+      ...locationData,
+      imagens: (existingImages || []).filter(Boolean),
+    };
+
+    let result;
+
+    try {
+      if (existingId) {
+        result = await this.update(existingId, normalizedData);
+      } else {
+        result = await this.create(normalizedData);
+      }
+
+      if (files && files.length > 0) {
+        const uploadId = existingId || result.id;
+        const uploadedUrls = await this.uploadMultipleImages(files, uploadId);
+        const finalImages = [...(normalizedData.imagens || []), ...uploadedUrls];
+
+        result = await this.update(result.id, {
+          ...normalizedData,
+          imagens: finalImages,
+        });
+      }
+
+      Logger.info("Localização salva com sucesso", result);
+      return result;
+    } catch (error) {
+      Logger.error("Erro ao salvar localização com imagens", error);
       throw error;
     }
   }

@@ -426,23 +426,19 @@ async function handleSubmit(e) {
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
 
-    // Upload de imagens
-    let imageUrls = [];
+    let existingImages = [];
 
-    // Imagens existentes (edição)
     if (isEdit) {
-      // Manter imagens existentes que não foram removidas
       const previewItems = document.querySelectorAll(
         "#imagePreview .preview-item",
       );
       previewItems.forEach((item) => {
         const img = item.querySelector("img");
         if (img && img.src) {
-          imageUrls.push(img.src);
+          existingImages.push(img.src);
         }
       });
 
-      // Remover imagens marcadas
       const removedList = document.getElementById("removedImages");
       if (removedList) {
         const removed = JSON.parse(removedList.value || "[]");
@@ -457,27 +453,16 @@ async function handleSubmit(e) {
       }
     }
 
-    // Upload de novas imagens
-    if (window.uploadFiles && window.uploadFiles.length > 0) {
-      const newImageUrls = await API.uploadMultipleImages(
-        window.uploadFiles,
-        locationId || Utils.generateId(),
-      );
-      imageUrls.push(...newImageUrls);
-    }
+    const result = await API.saveLocation(
+      locationData,
+      locationId,
+      window.uploadFiles || [],
+      existingImages,
+    );
 
-    // Adicionar imagens aos dados
-    locationData.imagens = imageUrls;
-
-    // Salvar no Firebase
-    let result;
     if (isEdit) {
-      // Atualizar
-      result = await API.update(isEdit, locationData);
       Utils.showNotification("Localização atualizada com sucesso!", "success");
     } else {
-      // Criar nova
-      result = await API.create(locationData);
       Utils.showNotification("Localização criada com sucesso!", "success");
     }
 
