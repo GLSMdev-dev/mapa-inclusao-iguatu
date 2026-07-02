@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configurações - Mapa da Inclusão</title>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- Estilos Personalizados -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <i class="fas fa-map-marked-alt"></i>
+          <span>Mapa da Inclusão</span>
+          <small>Iguatu/CE</small>
+        </div>
+        <button class="nav-toggle" id="navToggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-menu" id="navMenu">
+          <li>
+            <a href="index.html"><i class="fas fa-map"></i> Mapa</a>
+          </li>
+          <li>
+            <a href="cadastro.html"
+              ><i class="fas fa-plus-circle"></i> Cadastrar</a
+            >
+          </li>
+          <li>
+            <a href="configuracao.html" class="active"
+              ><i class="fas fa-cog"></i> Configurações</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Container Principal -->
+    <div class="config-container">
+      <div class="config-card">
+        <h2><i class="fas fa-cogs"></i> Configurações do Sistema</h2>
+
+        <!-- Status do Firebase -->
+        <div class="config-section">
+          <h3><i class="fas fa-database"></i> Status do Firebase</h3>
+          <div class="status-item">
+            <span class="status-label">Firestore:</span>
+            <span class="status-badge status-connected" id="firestoreStatus">
+              <i class="fas fa-check-circle"></i> Conectado
+            </span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">Storage:</span>
+            <span class="status-badge status-connected" id="storageStatus">
+              <i class="fas fa-check-circle"></i> Conectado
+            </span>
+          </div>
+        </div>
+
+        <!-- Estatísticas do Sistema -->
+        <div class="config-section">
+          <h3><i class="fas fa-chart-pie"></i> Estatísticas do Sistema</h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+              <div class="stat-info">
+                <span class="stat-number" id="totalLocations">0</span>
+                <span class="stat-label">Total de Localizações</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-images"></i></div>
+              <div class="stat-info">
+                <span class="stat-number" id="totalImages">0</span>
+                <span class="stat-label">Total de Imagens</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-eye"></i></div>
+              <div class="stat-info">
+                <span class="stat-number" id="totalViews">0</span>
+                <span class="stat-label">Total de Visualizações</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categorias -->
+        <div class="config-section">
+          <h3><i class="fas fa-tags"></i> Categorias</h3>
+          <div class="categories-list" id="categoriesList">
+            <!-- Categorias serão carregadas dinamicamente -->
+          </div>
+        </div>
+
+        <!-- Exportar Dados -->
+        <div class="config-section">
+          <h3><i class="fas fa-file-export"></i> Exportar Dados</h3>
+          <button id="exportCSV" class="btn btn-success">
+            <i class="fas fa-file-csv"></i> Exportar CSV
+          </button>
+          <button id="exportJSON" class="btn btn-primary">
+            <i class="fas fa-file-code"></i> Exportar JSON
+          </button>
+        </div>
+
+        <!-- Ações do Sistema -->
+        <div class="config-section">
+          <h3><i class="fas fa-tools"></i> Ações do Sistema</h3>
+          <button id="clearCache" class="btn btn-warning">
+            <i class="fas fa-broom"></i> Limpar Cache
+          </button>
+          <button id="refreshData" class="btn btn-info">
+            <i class="fas fa-sync"></i> Recarregar Dados
+          </button>
+        </div>
+
+        <!-- Sobre -->
+        <div class="config-section">
+          <h3><i class="fas fa-info-circle"></i> Sobre o Sistema</h3>
+          <div class="about-content">
+            <p><strong>Mapa da Inclusão - Iguatu/CE</strong></p>
+            <p>Versão: 1.0.0</p>
+            <p>Sistema de mapeamento de ações de inclusão social</p>
+            <p>Desenvolvido com ❤️ para Iguatu/CE</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+    <script src="js/config.js"></script>
+    <script src="js/logger.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/configuracao.js"></script>
+  </body>
+</html>

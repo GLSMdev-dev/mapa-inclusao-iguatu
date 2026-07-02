@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mapa da Inclusão - Iguatu/CE</title>
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- Estilos Personalizados -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <i class="fas fa-map-marked-alt"></i>
+          <span>Mapa da Inclusão</span>
+          <small>Iguatu/CE</small>
+        </div>
+        <button class="nav-toggle" id="navToggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-menu" id="navMenu">
+          <li>
+            <a href="index.html" class="active"
+              ><i class="fas fa-map"></i> Mapa</a
+            >
+          </li>
+          <li>
+            <a href="cadastro.html"
+              ><i class="fas fa-plus-circle"></i> Cadastrar</a
+            >
+          </li>
+          <li>
+            <a href="configuracao.html"
+              ><i class="fas fa-cog"></i> Configurações</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Container Principal -->
+    <div class="main-container">
+      <!-- Sidebar de Filtros -->
+      <aside class="sidebar" id="sidebar">
+        <div class="filters-container">
+          <h3><i class="fas fa-filter"></i> Filtros</h3>
+
+          <!-- Busca -->
+          <div class="search-box">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Buscar localização..."
+            />
+            <button id="searchBtn"><i class="fas fa-search"></i></button>
+          </div>
+
+          <!-- Filtro por Categoria -->
+          <div class="filter-group">
+            <label><i class="fas fa-tags"></i> Categoria</label>
+            <select id="categoryFilter">
+              <option value="all">Todas as categorias</option>
+              <option value="educacao">🎓 Educação</option>
+              <option value="saude">🏥 Saúde</option>
+              <option value="cultura">🎭 Cultura</option>
+              <option value="esporte">⚽ Esporte</option>
+              <option value="assistencia">🤝 Assistência Social</option>
+            </select>
+          </div>
+
+          <!-- Estatísticas -->
+          <div class="stats-container" id="statsContainer">
+            <h4><i class="fas fa-chart-bar"></i> Estatísticas</h4>
+            <div id="statsContent">
+              <div class="stat-item">
+                <span class="stat-label">Total:</span>
+                <span class="stat-value" id="totalCount">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Educação:</span>
+                <span class="stat-value" id="educacaoCount">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Saúde:</span>
+                <span class="stat-value" id="saudeCount">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Cultura:</span>
+                <span class="stat-value" id="culturaCount">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Esporte:</span>
+                <span class="stat-value" id="esporteCount">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Assistência:</span>
+                <span class="stat-value" id="assistenciaCount">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Conteúdo Principal -->
+      <main class="content">
+        <!-- Mapa -->
+        <div id="map" class="map-container"></div>
+
+        <!-- Lista de Localizações -->
+        <div class="locations-list" id="locationsList">
+          <div class="list-header">
+            <h3><i class="fas fa-list"></i> Localizações</h3>
+            <span id="listCount">0 encontrados</span>
+          </div>
+          <div id="locationsContainer" class="locations-grid">
+            <!-- Cards serão gerados dinamicamente -->
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+    <script src="js/config.js"></script>
+    <script src="js/logger.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/mapa.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
