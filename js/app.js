@@ -6,6 +6,7 @@
 const APP_STATE = {
   isAddingLocation: false,
   uploadFiles: [],
+  pendingLocation: null,
 };
 
 // ===== INICIALIZAÇÃO =====
@@ -123,6 +124,17 @@ function setupEvents() {
     form.addEventListener("submit", handleSubmit);
   }
 
+  document.querySelectorAll(".color-swatch").forEach((swatch) => {
+    swatch.addEventListener("click", () => {
+      const color = swatch.dataset.color;
+      const colorInput = document.getElementById("pinColor");
+      if (colorInput) {
+        colorInput.value = color;
+      }
+      updatePinColorSelection(color);
+    });
+  });
+
   const photoInput = document.getElementById("photoInput");
   if (photoInput) {
     photoInput.addEventListener("change", (event) => {
@@ -164,6 +176,7 @@ function setupEvents() {
     }
 
     const { lat, lng } = latlng;
+    APP_STATE.pendingLocation = { lat, lng };
     document.getElementById("latitude").value = lat;
     document.getElementById("longitude").value = lng;
     document.getElementById("address").value = "Buscando endereço...";
@@ -240,7 +253,17 @@ function openModal(defaults = {}) {
   const form = document.getElementById("locationFormModal");
   if (!modal || !form) return;
 
-  resetModalForm(defaults);
+  const resolvedDefaults = {
+    ...defaults,
+    lat: defaults.lat ?? APP_STATE.pendingLocation?.lat,
+    lng: defaults.lng ?? APP_STATE.pendingLocation?.lng,
+  };
+
+  if (resolvedDefaults.lat !== undefined && resolvedDefaults.lng !== undefined) {
+    APP_STATE.pendingLocation = { lat: resolvedDefaults.lat, lng: resolvedDefaults.lng };
+  }
+
+  resetModalForm(resolvedDefaults);
   modal.classList.add("open");
   document.body.classList.add("modal-open");
   window.location.hash = "cadastrar";
@@ -251,6 +274,7 @@ function closeModal() {
   if (!modal) return;
   modal.classList.remove("open");
   document.body.classList.remove("modal-open");
+  APP_STATE.pendingLocation = null;
   exitAddLocationMode();
   if (window.location.hash === "#cadastrar") {
     history.replaceState(null, "", window.location.pathname);
@@ -311,14 +335,28 @@ function closeDetailsModal() {
   document.body.classList.remove("modal-open");
 }
 
+function updatePinColorSelection(colorValue) {
+  document.querySelectorAll(".color-swatch").forEach((swatch) => {
+    swatch.classList.toggle("active", swatch.dataset.color === colorValue);
+  });
+}
+
 function resetModalForm(defaults = {}) {
   const form = document.getElementById("locationFormModal");
   if (!form) return;
   form.reset();
-  document.getElementById("latitude").value = defaults.lat || "";
-  document.getElementById("longitude").value = defaults.lng || "";
+
+  const lat = defaults.lat ?? APP_STATE.pendingLocation?.lat ?? "";
+  const lng = defaults.lng ?? APP_STATE.pendingLocation?.lng ?? "";
+  document.getElementById("latitude").value = lat;
+  document.getElementById("longitude").value = lng;
   document.getElementById("address").value = defaults.address || "";
-  document.getElementById("pinColor").value = defaults.pinColor || "#e74c3c";
+  const colorInput = document.getElementById("pinColor");
+  const colorValue = defaults.pinColor || "#e74c3c";
+  if (colorInput) {
+    colorInput.value = colorValue;
+  }
+  updatePinColorSelection(colorValue);
   document.getElementById("imagePreviewModal").innerHTML = "";
   APP_STATE.uploadFiles = [];
   const fileList = document.getElementById("fileListModal");
@@ -395,8 +433,9 @@ async function handleSubmit(event) {
 
   const lat = parseFloat(document.getElementById("latitude").value);
   const lng = parseFloat(document.getElementById("longitude").value);
+  const resolvedLocation = APP_STATE.pendingLocation || (Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null);
 
-  if (Number.isNaN(lat) || Number.isNaN(lng)) {
+  if (!resolvedLocation) {
     Utils.showNotification("Marque o local no mapa antes de salvar", "warning");
     return;
   }
@@ -420,8 +459,8 @@ async function handleSubmit(event) {
       publico_alvo: document.getElementById("publicTarget").value.trim(),
       profissionais: document.getElementById("professionals").value.trim(),
       cor_pin: document.getElementById("pinColor").value,
-      latitude: lat,
-      longitude: lng,
+      latitude: resolvedLocation.lat,
+      longitude: resolvedLocation.lng,
       contato: {
         telefone: "",
         email: "",
@@ -439,9 +478,10 @@ async function handleSubmit(event) {
 
     Utils.showNotification("Ação inclusiva cadastrada com sucesso", "success");
     form.reset();
+    APP_STATE.pendingLocation = null;
     closeModal();
     await loadData();
-    MapaApp.centerOn(lat, lng, 15);
+    MapaApp.centerOn(resolvedLocation.lat, resolvedLocation.lng, 15);
     Logger.info("Ação cadastrada", result);
   } catch (error) {
     Logger.error("Erro ao cadastrar ação", error);
@@ -574,3 +614,4 @@ function showLoading(show) {
 window.loadData = loadData;
 window.updateStats = updateStats;
 window.closeDetailsModal = closeDetailsModal;
+window.updatePinColorSelection = updatePinColorSelection;

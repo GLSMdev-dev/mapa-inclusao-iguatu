@@ -185,7 +185,15 @@
             </div>
             <div class="form-group">
               <label for="pinColor">Cor do pin</label>
-              <input id="pinColor" name="pinColor" type="color" value="#e74c3c" />
+              <div class="color-picker">
+                <input id="pinColor" name="pinColor" type="hidden" value="#e74c3c" />
+                <button type="button" class="color-swatch active" data-color="#e74c3c" style="background:#e74c3c"></button>
+                <button type="button" class="color-swatch" data-color="#3498db" style="background:#3498db"></button>
+                <button type="button" class="color-swatch" data-color="#2ecc71" style="background:#2ecc71"></button>
+                <button type="button" class="color-swatch" data-color="#9b59b6" style="background:#9b59b6"></button>
+                <button type="button" class="color-swatch" data-color="#f39c12" style="background:#f39c12"></button>
+                <button type="button" class="color-swatch" data-color="#16a085" style="background:#16a085"></button>
+              </div>
             </div>
           </div>
           <div class="form-group">
