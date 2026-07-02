@@ -84,26 +84,36 @@ function setupEvents() {
 
   const openModalBtn = document.getElementById("openRegisterModal");
   if (openModalBtn) {
-    openModalBtn.addEventListener("click", () => openModal());
+    openModalBtn.addEventListener("click", () => startAddLocationMode());
   }
 
   const cancelAddBtn = document.getElementById("cancelAddMode");
   if (cancelAddBtn) {
     cancelAddBtn.addEventListener("click", () => {
-      APP_STATE.isAddingLocation = false;
-      cancelAddBtn.classList.add("hidden");
+      exitAddLocationMode();
       Utils.showNotification("Modo de cadastro cancelado", "info");
     });
   }
 
   const modal = document.getElementById("registerModal");
   const closeModalBtn = document.getElementById("closeRegisterModal");
+  const detailsModal = document.getElementById("detailsModal");
+  const closeDetailsBtn = document.getElementById("closeDetailsModal");
 
   if (modal && closeModalBtn) {
     closeModalBtn.addEventListener("click", closeModal);
     modal.addEventListener("click", (event) => {
       if (event.target === modal) {
         closeModal();
+      }
+    });
+  }
+
+  if (detailsModal && closeDetailsBtn) {
+    closeDetailsBtn.addEventListener("click", closeDetailsModal);
+    detailsModal.addEventListener("click", (event) => {
+      if (event.target === detailsModal) {
+        closeDetailsModal();
       }
     });
   }
@@ -141,15 +151,11 @@ function setupEvents() {
 
   const pickLocationHint = document.getElementById("pickLocationHint");
   if (pickLocationHint) {
-    pickLocationHint.addEventListener("click", () => {
-      APP_STATE.isAddingLocation = true;
-      pickLocationHint.classList.add("active");
-      Utils.showNotification("Clique no mapa para marcar o local da ação", "info");
-    });
+    pickLocationHint.addEventListener("click", () => startAddLocationMode());
   }
 
   MapaApp.onMarkerClick = (location) => {
-    window.location.href = `detalhes.html?id=${location.id}`;
+    openDetailsModal(location);
   };
 
   MapaApp.onLocationClick = (latlng) => {
@@ -170,7 +176,7 @@ function setupEvents() {
 
     MapaApp.addSelectMarker(lat, lng);
     openModal({ lat, lng });
-    APP_STATE.isAddingLocation = false;
+    exitAddLocationMode();
   };
 
   window.addEventListener("hashchange", () => {
@@ -204,6 +210,31 @@ function populateCategoryFilter(categories) {
   }
 }
 
+function startAddLocationMode() {
+  APP_STATE.isAddingLocation = true;
+  const hint = document.getElementById("pickLocationHint");
+  const cancelBtn = document.getElementById("cancelAddMode");
+  if (hint) {
+    hint.classList.add("active");
+  }
+  if (cancelBtn) {
+    cancelBtn.classList.remove("hidden");
+  }
+  Utils.showNotification("Clique no mapa para marcar o local da ação", "info");
+}
+
+function exitAddLocationMode() {
+  APP_STATE.isAddingLocation = false;
+  const hint = document.getElementById("pickLocationHint");
+  const cancelBtn = document.getElementById("cancelAddMode");
+  if (hint) {
+    hint.classList.remove("active");
+  }
+  if (cancelBtn) {
+    cancelBtn.classList.add("hidden");
+  }
+}
+
 function openModal(defaults = {}) {
   const modal = document.getElementById("registerModal");
   const form = document.getElementById("locationFormModal");
@@ -220,9 +251,64 @@ function closeModal() {
   if (!modal) return;
   modal.classList.remove("open");
   document.body.classList.remove("modal-open");
+  exitAddLocationMode();
   if (window.location.hash === "#cadastrar") {
     history.replaceState(null, "", window.location.pathname);
   }
+}
+
+function openDetailsModal(location) {
+  const modal = document.getElementById("detailsModal");
+  if (!modal) return;
+
+  const title = document.getElementById("detailsModalTitle");
+  const content = document.getElementById("detailsModalContent");
+  const images = document.getElementById("detailsModalImages");
+
+  if (title) {
+    title.textContent = location.titulo || "Ação inclusiva";
+  }
+
+  if (content) {
+    const category = MapaApp.categories.find((c) => c.id === location.categoria);
+    const categoryName = category ? category.nome : location.categoria;
+    const categoryColor = location.cor_pin || (category ? category.cor : "#3498db");
+    const imageHtml = location.imagens && location.imagens.length > 0
+      ? `<img src="${location.imagens[0]}" alt="${Utils.sanitizeHTML(location.titulo || "Imagem")}" class="details-modal-image">`
+      : "";
+
+    content.innerHTML = `
+      <div class="details-modal-badge" style="background-color:${categoryColor}">${category ? category.icone : "📍"} ${Utils.sanitizeHTML(categoryName)}</div>
+      <p>${Utils.sanitizeHTML(location.descricao || "Sem descrição")}</p>
+      <div class="details-modal-meta">
+        <span><strong>Endereço:</strong> ${Utils.sanitizeHTML(location.endereco || "Não informado")}</span>
+        <span><strong>Público-alvo:</strong> ${Utils.sanitizeHTML(location.publico_alvo || "Não informado")}</span>
+        <span><strong>Profissionais:</strong> ${Utils.sanitizeHTML(location.profissionais || "Não informado")}</span>
+      </div>
+      ${imageHtml}
+    `;
+  }
+
+  if (images) {
+    if (location.imagens && location.imagens.length > 1) {
+      images.innerHTML = location.imagens
+        .slice(1)
+        .map((imageUrl) => `<img src="${imageUrl}" alt="Foto da ação" class="details-modal-thumb">`)
+        .join("");
+    } else {
+      images.innerHTML = "";
+    }
+  }
+
+  modal.classList.add("open");
+  document.body.classList.add("modal-open");
+}
+
+function closeDetailsModal() {
+  const modal = document.getElementById("detailsModal");
+  if (!modal) return;
+  modal.classList.remove("open");
+  document.body.classList.remove("modal-open");
 }
 
 function resetModalForm(defaults = {}) {
@@ -487,3 +573,4 @@ function showLoading(show) {
 
 window.loadData = loadData;
 window.updateStats = updateStats;
+window.closeDetailsModal = closeDetailsModal;

@@ -125,6 +125,15 @@ class MapaAppClass {
       });
 
       const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(this.markersLayer);
+      const firstImage = location.imagens && location.imagens.length ? location.imagens[0] : "";
+      const tooltipContent = `
+        <div style="max-width: 180px;">
+          <strong>${Utils.sanitizeHTML(location.titulo || "Localização")}</strong>
+          <p style="margin: 4px 0 6px; color: #4b5563;">${Utils.sanitizeHTML(location.descricao || "")}</p>
+          ${firstImage ? `<img src="${firstImage}" alt="Foto" style="width: 100%; height: 90px; object-fit: cover; border-radius: 8px;">` : ""}
+        </div>
+      `;
+      marker.bindTooltip(tooltipContent, { sticky: true, direction: "top" });
       marker.bindPopup(`<strong>${Utils.sanitizeHTML(location.titulo || "Localização")}</strong>`);
 
       marker.on("click", () => {
@@ -147,7 +156,9 @@ class MapaAppClass {
   addSelectMarker(lat, lng) {
     if (!this.map) return;
 
-    this.clearMarkers();
+    if (this.selectedMarker) {
+      this.selectedMarker.remove();
+    }
 
     const markerIcon = L.divIcon({
       className: "select-marker",
@@ -171,6 +182,7 @@ class MapaAppClass {
     });
 
     this.selectedMarker = L.marker([lat, lng], { icon: markerIcon }).addTo(this.markersLayer);
+    this.selectedMarker.bindTooltip("Local selecionado para nova ação", { sticky: true, direction: "top" });
     this.centerOn(lat, lng, 16);
   }
 

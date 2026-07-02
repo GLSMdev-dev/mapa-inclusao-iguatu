@@ -410,6 +410,55 @@ body.modal-open {
   background-color: var(--gray-200) !important;
 }
 
+.details-modal-card {
+  width: min(760px, 100%);
+}
+
+.details-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.details-modal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: white;
+  font-weight: 600;
+}
+
+.details-modal-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--gray-700);
+}
+
+.details-modal-image {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.details-modal-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.details-modal-thumb {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
 @media (max-width: 768px) {
   .modal-form .form-grid {
     grid-template-columns: 1fr;
