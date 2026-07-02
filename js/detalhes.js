@@ -116,30 +116,11 @@ function populateDetails(location) {
     location.endereco || "Não informado";
 
   // Informações adicionais
-  document.getElementById("detailHorario").textContent =
-    location.horario_funcionamento || "Não informado";
-
   document.getElementById("detailPublicoAlvo").textContent =
     location.publico_alvo || "Não informado";
 
   document.getElementById("detailProfissionais").textContent =
     location.profissionais || "Não informado";
-
-  // Contato
-  document.getElementById("detailTelefone").textContent = location.contato
-    ?.telefone
-    ? Utils.formatPhone(location.contato.telefone)
-    : "Não informado";
-
-  document.getElementById("detailEmail").textContent =
-    location.contato?.email || "Não informado";
-
-  document.getElementById("detailSite").textContent =
-    location.contato?.site || "Não informado";
-  if (location.contato?.site) {
-    const siteLink = document.getElementById("detailSite");
-    siteLink.innerHTML = `<a href="${location.contato.site}" target="_blank">${location.contato.site}</a>`;
-  }
 
   // Data de criação
   document.getElementById("detailDataCriacao").textContent =

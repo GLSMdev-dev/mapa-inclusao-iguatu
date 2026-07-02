@@ -407,11 +407,11 @@ async function handleSubmit(e) {
       latitude: lat,
       longitude: lng,
       contato: {
-        telefone: document.getElementById("telefone").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        site: document.getElementById("site").value.trim(),
+        telefone: "",
+        email: "",
+        site: "",
       },
-      horario_funcionamento: document.getElementById("horario").value.trim(),
+      horario_funcionamento: "",
       publico_alvo: document.getElementById("publicoAlvo").value.trim(),
       profissionais: document.getElementById("profissionais").value.trim(),
     };
