@@ -1,0 +1,48 @@
+# Dependências
+node_modules/
+package-lock.json
+yarn.lock
+
+# Arquivos de configuração local
+js/config.js
+.env
+*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Arquivos de IDE
+.vscode/
+.idea/
+*.iml
+
+# Arquivos temporários
+tmp/
+temp/
+*.tmp
+
+# Arquivos de build
+dist/
+build/
+*.min.js
+*.min.css
+
+# Secrets
+*.secret
+*.key
+*.pem
+*.crt
+*.csr
+
+# Backup
+*.bak
+*.backup
