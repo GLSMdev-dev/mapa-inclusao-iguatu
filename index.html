@@ -18,7 +18,7 @@
     />
 
     <!-- Estilos Personalizados -->
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.css?v=20260702" />
   </head>
   <body>
     <!-- Navbar -->
@@ -139,11 +139,101 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
-    <script src="js/config.js"></script>
-    <script src="js/logger.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/mapa.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/config.js?v=20260702"></script>
+    <script src="js/logger.js?v=20260702"></script>
+    <script src="js/utils.js?v=20260702"></script>
+    <script src="js/api.js?v=20260702"></script>
+    <script src="js/mapa.js?v=20260702"></script>
+    <script>
+      if (!window.MapaApp && window.L) {
+        window.MapaApp = {
+          categories: [],
+          onMarkerClick: null,
+          onLocationClick: null,
+          map: null,
+          markersLayer: null,
+          setCategories(categories) {
+            this.categories = categories || [];
+          },
+          getCategoryColor(categoryId) {
+            const category = this.categories.find((c) => c.id === categoryId);
+            return category ? category.cor : "#3498db";
+          },
+          getCategoryIcon(categoryId) {
+            const category = this.categories.find((c) => c.id === categoryId);
+            return category ? category.icone : "📍";
+          },
+          init(mapElement, options = {}) {
+            const center = options.center || [-6.3616, -39.2925];
+            const zoom = options.zoom || 14;
+            this.map = L.map(mapElement, { center, zoom, zoomControl: true });
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+              attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            }).addTo(this.map);
+            this.markersLayer = L.layerGroup().addTo(this.map);
+            this.map.on("click", (event) => {
+              if (this.onLocationClick) {
+                this.onLocationClick({ lat: event.latlng.lat, lng: event.latlng.lng });
+              }
+            });
+            return this.map;
+          },
+          clearMarkers() {
+            if (this.markersLayer) {
+              this.markersLayer.clearLayers();
+            }
+          },
+          addMarkers(locations) {
+            this.clearMarkers();
+            if (!locations || !locations.length) return [];
+            return locations.map((location) => {
+              const lat = Number(location.latitude);
+              const lng = Number(location.longitude);
+              if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+              const color = this.getCategoryColor(location.categoria);
+              const icon = this.getCategoryIcon(location.categoria);
+              const markerIcon = L.divIcon({
+                className: "map-marker",
+                html: `<div style="background-color:${color};width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;color:white;">${icon}</div>`,
+                iconSize: [30, 30],
+                iconAnchor: [15, 15],
+              });
+              const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(this.markersLayer);
+              marker.on("click", () => {
+                if (this.onMarkerClick) {
+                  this.onMarkerClick(location);
+                }
+              });
+              return marker;
+            }).filter(Boolean);
+          },
+          addSelectMarker(lat, lng) {
+            if (!this.map) return;
+            this.clearMarkers();
+            const markerIcon = L.divIcon({
+              className: "select-marker",
+              html: '<div style="background-color:#e74c3c;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;color:white;">📍</div>',
+              iconSize: [30, 30],
+              iconAnchor: [15, 15],
+            });
+            L.marker([lat, lng], { icon: markerIcon }).addTo(this.markersLayer);
+            this.map.setView([lat, lng], 16);
+          },
+          async getUserLocation() {
+            return new Promise((resolve, reject) => {
+              if (!navigator.geolocation) {
+                reject(new Error("Geolocalização não suportada"));
+                return;
+              }
+              navigator.geolocation.getCurrentPosition(
+                (position) => resolve({ lat: position.coords.latitude, lng: position.coords.longitude }),
+                (error) => reject(error),
+              );
+            });
+          },
+        };
+      }
+    </script>
+    <script src="js/app.js?v=20260702"></script>
   </body>
 </html>
