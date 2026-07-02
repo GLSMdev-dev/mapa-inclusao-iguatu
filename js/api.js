@@ -397,7 +397,7 @@ class FirebaseAPI {
    */
   async createDefaultCategories() {
     this.checkInitialized();
-    Logger.info("Criando categorias padrão...");
+    Logger.info("Garantindo categorias do Projeto PertenSer...");
 
     const defaultCategories = [
       {
@@ -433,24 +433,34 @@ class FirebaseAPI {
     ];
 
     try {
-      // Verificar se já existem categorias
       const existing = await this.getCategories();
+      const categoriesToReturn = [...existing];
 
-      if (existing.length > 0) {
-        Logger.info("Categorias já existem");
-        return existing;
-      }
-
-      // Criar categorias padrão
       for (const category of defaultCategories) {
-        await this.db
-          .collection(this.categoriesCollection)
-          .doc(category.id)
-          .set(category);
+        const existingCategory = categoriesToReturn.find((item) => item.id === category.id);
+
+        if (!existingCategory) {
+          await this.db
+            .collection(this.categoriesCollection)
+            .doc(category.id)
+            .set(category);
+          categoriesToReturn.push(category);
+        } else if (
+          existingCategory.nome !== category.nome ||
+          existingCategory.icone !== category.icone ||
+          existingCategory.cor !== category.cor
+        ) {
+          await this.db
+            .collection(this.categoriesCollection)
+            .doc(category.id)
+            .set({ ...existingCategory, ...category }, { merge: true });
+          Object.assign(existingCategory, { ...existingCategory, ...category });
+        }
       }
 
-      Logger.info(`${defaultCategories.length} categorias criadas`);
-      return defaultCategories;
+      categoriesToReturn.sort((a, b) => a.nome.localeCompare(b.nome));
+      Logger.info(`${categoriesToReturn.length} categorias disponíveis`);
+      return categoriesToReturn;
     } catch (error) {
       Logger.error("Erro ao criar categorias padrão", error);
       throw error;

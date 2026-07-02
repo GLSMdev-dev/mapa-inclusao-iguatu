@@ -84,6 +84,8 @@ async function loadLocationForEdit(id) {
       document.getElementById("descricao").value = location.descricao || "";
       document.getElementById("endereco").value = location.endereco || "";
       document.getElementById("categoria").value = location.categoria || "";
+      document.getElementById("publicoAlvo").value = location.publico_alvo || "";
+      document.getElementById("profissionais").value = location.profissionais || "";
       document.getElementById("latitude").value = location.latitude || "";
       document.getElementById("longitude").value = location.longitude || "";
       document.getElementById("telefone").value =
@@ -410,6 +412,8 @@ async function handleSubmit(e) {
         site: document.getElementById("site").value.trim(),
       },
       horario_funcionamento: document.getElementById("horario").value.trim(),
+      publico_alvo: document.getElementById("publicoAlvo").value.trim(),
+      profissionais: document.getElementById("profissionais").value.trim(),
     };
 
     // Verificar se é edição

@@ -3,137 +3,154 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mapa da Inclusão - Iguatu/CE</title>
+    <title>Editar ação - Projeto PertenSer</title>
 
-    <!-- Leaflet CSS -->
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     />
-
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-
-    <!-- Estilos Personalizados -->
     <link rel="stylesheet" href="css/style.css" />
+    <style>
+      body { background: #f4f7fb; }
+      .editor-shell { max-width: 1200px; margin: 32px auto; padding: 0 20px 40px; }
+      .editor-card { background: white; border-radius: 20px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08); overflow: hidden; }
+      .editor-header { padding: 24px 28px; border-bottom: 1px solid #eef2f7; }
+      .editor-body { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px; padding: 24px 28px 28px; }
+      .editor-section { background: #f8fafc; border-radius: 16px; padding: 18px; }
+      .editor-section h3 { margin-top: 0; margin-bottom: 16px; color: #244060; }
+      .editor-map { height: 320px; border-radius: 12px; overflow: hidden; }
+      .form-grid { display: grid; gap: 14px; }
+      .form-group { display: flex; flex-direction: column; gap: 6px; }
+      .form-group label { font-weight: 600; color: #4b5563; }
+      .form-group input,
+      .form-group select,
+      .form-group textarea { border: 1px solid #d1d5db; border-radius: 10px; padding: 10px 12px; font-size: 15px; }
+      .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+      .drop-zone { border: 2px dashed #cbd5e1; border-radius: 12px; padding: 16px; text-align: center; color: #64748b; cursor: pointer; background: white; }
+      .drop-zone.drag-active { border-color: #3498db; background: #eff6ff; }
+      .image-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-top: 10px; }
+      .preview-item { position: relative; border-radius: 10px; overflow: hidden; }
+      .preview-item img { width: 100%; height: 90px; object-fit: cover; display: block; }
+      .preview-item button { position: absolute; top: 6px; right: 6px; border: none; background: rgba(0,0,0,.7); color: white; border-radius: 999px; width: 24px; height: 24px; cursor: pointer; }
+      @media (max-width: 900px) { .editor-body { grid-template-columns: 1fr; } }
+    </style>
   </head>
   <body>
-    <!-- Navbar -->
     <nav class="navbar">
       <div class="nav-container">
         <div class="nav-brand">
           <i class="fas fa-map-marked-alt"></i>
-          <span>Mapa da Inclusão</span>
+          <span>Projeto PertenSer</span>
           <small>Iguatu/CE</small>
         </div>
         <button class="nav-toggle" id="navToggle">
           <i class="fas fa-bars"></i>
         </button>
         <ul class="nav-menu" id="navMenu">
-          <li>
-            <a href="index.html" class="active"
-              ><i class="fas fa-map"></i> Mapa</a
-            >
-          </li>
-          <li>
-            <a href="cadastro.html"
-              ><i class="fas fa-plus-circle"></i> Cadastrar</a
-            >
-          </li>
-          <li>
-            <a href="configuracao.html"
-              ><i class="fas fa-cog"></i> Configurações</a
-            >
-          </li>
+          <li><a href="index.html"><i class="fas fa-map"></i> Mapa</a></li>
+          <li><a href="cadastro.html" class="active"><i class="fas fa-plus-circle"></i> Cadastrar</a></li>
+          <li><a href="configuracao.html"><i class="fas fa-cog"></i> Configurações</a></li>
         </ul>
       </div>
     </nav>
 
-    <!-- Container Principal -->
-    <div class="main-container">
-      <!-- Sidebar de Filtros -->
-      <aside class="sidebar" id="sidebar">
-        <div class="filters-container">
-          <h3><i class="fas fa-filter"></i> Filtros</h3>
-
-          <!-- Busca -->
-          <div class="search-box">
-            <input
-              type="text"
-              id="searchInput"
-              placeholder="Buscar localização..."
-            />
-            <button id="searchBtn"><i class="fas fa-search"></i></button>
-          </div>
-
-          <!-- Filtro por Categoria -->
-          <div class="filter-group">
-            <label><i class="fas fa-tags"></i> Categoria</label>
-            <select id="categoryFilter">
-              <option value="all">Todas as categorias</option>
-              <option value="educacao">🎓 Educação</option>
-              <option value="saude">🏥 Saúde</option>
-              <option value="cultura">🎭 Cultura</option>
-              <option value="esporte">⚽ Esporte</option>
-              <option value="assistencia">🤝 Assistência Social</option>
-            </select>
-          </div>
-
-          <!-- Estatísticas -->
-          <div class="stats-container" id="statsContainer">
-            <h4><i class="fas fa-chart-bar"></i> Estatísticas</h4>
-            <div id="statsContent">
-              <div class="stat-item">
-                <span class="stat-label">Total:</span>
-                <span class="stat-value" id="totalCount">0</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Educação:</span>
-                <span class="stat-value" id="educacaoCount">0</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Saúde:</span>
-                <span class="stat-value" id="saudeCount">0</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Cultura:</span>
-                <span class="stat-value" id="culturaCount">0</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Esporte:</span>
-                <span class="stat-value" id="esporteCount">0</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Assistência:</span>
-                <span class="stat-value" id="assistenciaCount">0</span>
-              </div>
+    <div class="editor-shell">
+      <div class="editor-card">
+        <div class="editor-header">
+          <h2 id="formTitle"><i class="fas fa-edit"></i> Editar ação inclusiva</h2>
+          <p>Atualize os dados da ação e mantenha o registro alinhado com o Projeto PertenSer.</p>
+        </div>
+        <div class="editor-body">
+          <section class="editor-section">
+            <h3><i class="fas fa-map-marker-alt"></i> Localização</h3>
+            <div id="map" class="editor-map"></div>
+            <div class="form-actions">
+              <button type="button" id="getCurrentLocation" class="btn btn-info">
+                <i class="fas fa-location-arrow"></i> Usar minha localização
+              </button>
             </div>
-          </div>
-        </div>
-      </aside>
+            <input type="hidden" id="latitude" name="latitude" required />
+            <input type="hidden" id="longitude" name="longitude" required />
+          </section>
 
-      <!-- Conteúdo Principal -->
-      <main class="content">
-        <!-- Mapa -->
-        <div id="map" class="map-container"></div>
+          <section class="editor-section">
+            <h3><i class="fas fa-file-alt"></i> Dados da ação</h3>
+            <form id="locationForm" class="form-grid">
+              <div class="form-group">
+                <label for="titulo">Nome da ação <span class="required">*</span></label>
+                <input id="titulo" name="titulo" required />
+              </div>
 
-        <!-- Lista de Localizações -->
-        <div class="locations-list" id="locationsList">
-          <div class="list-header">
-            <h3><i class="fas fa-list"></i> Localizações</h3>
-            <span id="listCount">0 encontrados</span>
-          </div>
-          <div id="locationsContainer" class="locations-grid">
-            <!-- Cards serão gerados dinamicamente -->
-          </div>
+              <div class="form-group">
+                <label for="endereco">Endereço <span class="required">*</span></label>
+                <input id="endereco" name="endereco" required />
+              </div>
+
+              <div class="form-group">
+                <label for="categoria">Categoria <span class="required">*</span></label>
+                <select id="categoria" name="categoria" required></select>
+              </div>
+
+              <div class="form-group">
+                <label for="publicoAlvo">Público-alvo</label>
+                <input id="publicoAlvo" name="publicoAlvo" />
+              </div>
+
+              <div class="form-group">
+                <label for="profissionais">Profissionais</label>
+                <input id="profissionais" name="profissionais" />
+              </div>
+
+              <div class="form-group">
+                <label for="descricao">Descrição</label>
+                <textarea id="descricao" name="descricao" rows="4"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="horario">Horário de funcionamento</label>
+                <input id="horario" name="horario" />
+              </div>
+
+              <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input id="telefone" name="telefone" />
+              </div>
+
+              <div class="form-group">
+                <label for="email">E-mail</label>
+                <input id="email" name="email" type="email" />
+              </div>
+
+              <div class="form-group">
+                <label for="site">Site</label>
+                <input id="site" name="site" type="url" />
+              </div>
+
+              <div class="form-group">
+                <label for="dropZone">Fotos da ação</label>
+                <div id="dropZone" class="drop-zone">Arraste imagens aqui ou clique para selecionar</div>
+                <input type="file" id="imageInput" accept="image/*" multiple hidden />
+                <div id="imagePreview" class="image-preview"></div>
+                <input type="hidden" id="fileList" name="fileList" />
+                <input type="hidden" id="removedImages" name="removedImages" />
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="cancelBtn" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" id="submitBtn" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Salvar
+                </button>
+              </div>
+            </form>
+          </section>
         </div>
-      </main>
+      </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -144,6 +161,6 @@
     <script src="js/utils.js"></script>
     <script src="js/api.js"></script>
     <script src="js/mapa.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/cadastro.js"></script>
   </body>
 </html>

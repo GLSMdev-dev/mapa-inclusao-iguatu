@@ -117,14 +117,25 @@ async function loadCategories() {
     if (!container) return;
 
     container.innerHTML = "";
+
+    if (!categories.length) {
+      container.innerHTML = '<p class="empty-state">Nenhuma categoria cadastrada ainda.</p>';
+      return;
+    }
+
     categories.forEach((category) => {
       const div = document.createElement("div");
       div.className = "category-item";
       div.innerHTML = `
-                <span class="color-indicator" style="background-color: ${category.cor}"></span>
-                <span>${category.icone} ${category.nome}</span>
-                <span style="margin-left: auto; color: #7f8c8d; font-size: 0.9em;">
-                    (${category.id})
+                <div class="category-main">
+                  <span class="color-indicator" style="background-color: ${category.cor}"></span>
+                  <div class="category-info">
+                    <strong>${category.icone} ${category.nome}</strong>
+                    <small>ID: ${category.id}</small>
+                  </div>
+                </div>
+                <span class="category-chip" style="background-color: ${category.cor}20; color: ${category.cor};">
+                  ${category.cor}
                 </span>
             `;
       container.appendChild(div);
