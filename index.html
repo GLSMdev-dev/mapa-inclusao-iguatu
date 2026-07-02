@@ -25,9 +25,13 @@
     <nav class="navbar">
       <div class="nav-container">
         <div class="nav-brand">
-          <i class="fas fa-map-marked-alt"></i>
-          <span>Mapa da Inclusão</span>
-          <small>Iguatu/CE</small>
+          <div class="brand-mark">
+            <img src="logo.png" alt="PertenSer" onerror="this.style.display='none'" />
+          </div>
+          <div>
+            <span>Projeto PertenSer</span>
+            <small>Iguatu/CE</small>
+          </div>
         </div>
         <button class="nav-toggle" id="navToggle">
           <i class="fas fa-bars"></i>
@@ -39,9 +43,9 @@
             >
           </li>
           <li>
-            <a href="cadastro.html"
-              ><i class="fas fa-plus-circle"></i> Cadastrar</a
-            >
+            <button type="button" class="nav-link-btn" id="openRegisterModal">
+              <i class="fas fa-plus-circle"></i> Cadastrar
+            </button>
           </li>
           <li>
             <a href="configuracao.html"
@@ -57,6 +61,14 @@
       <!-- Sidebar de Filtros -->
       <aside class="sidebar" id="sidebar">
         <div class="filters-container">
+          <div class="sidebar-actions">
+            <button type="button" class="btn btn-primary" id="pickLocationHint">
+              <i class="fas fa-map-marker-alt"></i> Marcar nova ação
+            </button>
+            <button type="button" class="btn btn-secondary hidden" id="cancelAddMode">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+          </div>
           <h3><i class="fas fa-filter"></i> Filtros</h3>
 
           <!-- Busca -->
@@ -131,6 +143,72 @@
           </div>
         </div>
       </main>
+    </div>
+
+    <div class="modal-backdrop" id="registerModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3><i class="fas fa-plus-circle"></i> Nova ação inclusiva</h3>
+          <button type="button" class="modal-close" id="closeRegisterModal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="locationFormModal" class="modal-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="actionName">Nome da ação <span class="required">*</span></label>
+              <input id="actionName" name="actionName" required />
+            </div>
+            <div class="form-group">
+              <label for="actionCategory">Tipo de serviço <span class="required">*</span></label>
+              <select id="actionCategory" name="actionCategory" required></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="actionDescription">Descrição</label>
+            <textarea id="actionDescription" name="actionDescription" rows="3"></textarea>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="publicTarget">Público-alvo</label>
+              <input id="publicTarget" name="publicTarget" />
+            </div>
+            <div class="form-group">
+              <label for="professionals">Profissionais</label>
+              <input id="professionals" name="professionals" />
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="address">Endereço</label>
+              <input id="address" name="address" />
+            </div>
+            <div class="form-group">
+              <label for="pinColor">Cor do pin</label>
+              <input id="pinColor" name="pinColor" type="color" value="#e74c3c" />
+            </div>
+          </div>
+          <div class="form-group">
+            <input id="latitude" name="latitude" type="hidden" />
+            <input id="longitude" name="longitude" type="hidden" />
+          </div>
+          <div class="form-group">
+            <label>Fotos da ação</label>
+            <div class="drop-zone" id="dropZoneModal">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Arraste imagens aqui ou clique para selecionar</p>
+              <input id="photoInput" type="file" accept="image/*" multiple />
+            </div>
+            <div id="imagePreviewModal" class="image-preview"></div>
+          </div>
+          <div class="form-actions modal-actions">
+            <button type="button" class="btn btn-secondary" id="cancelRegisterModal">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="submitActionBtn">
+              <i class="fas fa-save"></i> Salvar ação
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- Scripts -->

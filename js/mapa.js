@@ -100,7 +100,7 @@ class MapaAppClass {
         return;
       }
 
-      const color = this.getCategoryColor(location.categoria);
+      const color = location.cor_pin || this.getCategoryColor(location.categoria);
       const icon = this.getCategoryIcon(location.categoria);
 
       const markerIcon = L.divIcon({

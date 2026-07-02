@@ -400,15 +400,35 @@ class FirebaseAPI {
     Logger.info("Criando categorias padrão...");
 
     const defaultCategories = [
-      { id: "educacao", nome: "Educação", icone: "🎓", cor: "#3498db" },
-      { id: "saude", nome: "Saúde", icone: "🏥", cor: "#2ecc71" },
-      { id: "cultura", nome: "Cultura", icone: "🎭", cor: "#e67e22" },
-      { id: "esporte", nome: "Esporte", icone: "⚽", cor: "#3498db" },
       {
-        id: "assistencia",
-        nome: "Assistência Social",
+        id: "clinicas-servicos",
+        nome: "Clínicas e Serviços",
+        icone: "🏥",
+        cor: "#2ecc71",
+      },
+      {
+        id: "salas-atendimento-educacional-especializado",
+        nome: "Salas de Atendimento Educacional Especializado",
+        icone: "🎓",
+        cor: "#3498db",
+      },
+      {
+        id: "projetos-inclusivos",
+        nome: "Projetos Inclusivos",
         icone: "🤝",
         cor: "#9b59b6",
+      },
+      {
+        id: "associacoes",
+        nome: "Associações",
+        icone: "🏛️",
+        cor: "#e67e22",
+      },
+      {
+        id: "servicos-publicos-saude-mental",
+        nome: "Serviços Públicos de Saúde Mental",
+        icone: "🧠",
+        cor: "#16a085",
       },
     ];
 

@@ -126,6 +126,22 @@ body {
   font-weight: bold;
 }
 
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: white;
+  display: grid;
+  place-items: center;
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .nav-brand i {
   font-size: var(--font-size-2xl);
   color: var(--secondary);
@@ -154,7 +170,8 @@ body {
   gap: var(--spacing-md);
 }
 
-.nav-menu li a {
+.nav-menu li a,
+.nav-menu li .nav-link-btn {
   color: white;
   text-decoration: none;
   padding: var(--spacing-sm) var(--spacing-md);
@@ -163,13 +180,19 @@ body {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font: inherit;
 }
 
-.nav-menu li a:hover {
+.nav-menu li a:hover,
+.nav-menu li .nav-link-btn:hover {
   background-color: var(--primary-light);
 }
 
-.nav-menu li a.active {
+.nav-menu li a.active,
+.nav-menu li .nav-link-btn.active {
   background-color: var(--secondary);
 }
 
@@ -307,6 +330,17 @@ body {
 }
 
 /* Mapa */
+.sidebar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.hidden {
+  display: none !important;
+}
+
 .map-container {
   flex: 2;
   min-height: 300px;
@@ -316,6 +350,70 @@ body {
 #map {
   width: 100%;
   height: 100%;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  z-index: var(--z-modal);
+}
+
+.modal-backdrop.open {
+  display: flex;
+}
+
+.modal-card {
+  width: min(900px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  padding: var(--spacing-lg);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.modal-close {
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-xl);
+  cursor: pointer;
+}
+
+.modal-form .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.modal-actions {
+  justify-content: flex-end;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+.drag-active {
+  border-color: var(--secondary) !important;
+  background-color: var(--gray-200) !important;
+}
+
+@media (max-width: 768px) {
+  .modal-form .form-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Lista de Localizações */
