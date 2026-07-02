@@ -100,7 +100,7 @@ function populateDetails(location) {
 
   const category = MapaApp.categories.find((c) => c.id === location.categoria);
   const categoryName = category ? category.nome : location.categoria;
-  const categoryColor = category ? category.cor : "#3498db";
+  const categoryColor = location.cor_pin || (category ? category.cor : "#3498db");
   const categoryIcon = category ? category.icone : "📍";
 
   const badge = document.getElementById("detailCategoria");
@@ -115,9 +115,15 @@ function populateDetails(location) {
   document.getElementById("detailEndereco").textContent =
     location.endereco || "Não informado";
 
-  // Horário
+  // Informações adicionais
   document.getElementById("detailHorario").textContent =
     location.horario_funcionamento || "Não informado";
+
+  document.getElementById("detailPublicoAlvo").textContent =
+    location.publico_alvo || "Não informado";
+
+  document.getElementById("detailProfissionais").textContent =
+    location.profissionais || "Não informado";
 
   // Contato
   document.getElementById("detailTelefone").textContent = location.contato
