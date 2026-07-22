@@ -6,3 +6,13 @@ window.FIREBASE_CONFIG = {
     messagingSenderId: "206884689169",
     appId: "1:206884689169:web:72d14597636d403386e8b0"
 };
+
+// ============================================
+// CONFIGURAÇÕES DE SEGURANÇA
+// ============================================
+
+window.APP_CONFIG = {
+    // Senha para editar e excluir ações
+    // ⚠️ ALTERE ESTA SENHA PARA UMA MAIS SEGURA
+    adminPassword: "pertencer2024"
+};
