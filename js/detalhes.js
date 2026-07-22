@@ -93,6 +93,42 @@ async function loadDetails(id) {
         `;
   }
 }
+// ===== VERIFICAÇÃO DE SENHA =====
+/**
+ * Verifica se a senha está correta
+ * @param {string} acao - Nome da ação (para exibir no prompt)
+ * @returns {Promise<boolean>} - True se a senha estiver correta
+ */
+async function verificarSenha(acao = "realizar esta ação") {
+    return new Promise((resolve) => {
+        // Obter a senha configurada
+        const senhaCorreta = window.APP_CONFIG?.adminPassword || "pertencer2024";
+        
+        // Solicitar senha ao usuário
+        const senhaDigitada = prompt(
+            `🔒 Para ${acao}, digite a senha de administrador:`,
+            ""
+        );
+        
+        // Se o usuário cancelou ou não digitou nada
+        if (senhaDigitada === null) {
+            Utils.showNotification("Operação cancelada pelo usuário.", "info");
+            resolve(false);
+            return;
+        }
+        
+        // Verificar senha
+        if (senhaDigitada === senhaCorreta) {
+            resolve(true);
+        } else {
+            Utils.showNotification("❌ Senha incorreta! Tente novamente.", "error", 3000);
+            resolve(false);
+        }
+    });
+}
+
+// ===== POPULAR DETALHES =====
+function populateDetails(location) {
 
 // ===== POPULAR DETALHES =====
 function populateDetails(location) {
