@@ -502,6 +502,13 @@ class FirebaseAPI {
         icone: "🧠",
         cor: "#16a085",
       },
+      // NOVA CATEGORIA
+    {
+        id: "turismo-servicos",
+        nome: "Turismo e Serviços",
+        icone: "✈️",
+        cor: "#f39c12",
+    },
     ];
 
     try {
