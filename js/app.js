@@ -452,22 +452,23 @@ async function handleSubmit(event) {
 
   try {
     const locationData = {
-      titulo: document.getElementById("actionName").value.trim(),
-      descricao: document.getElementById("actionDescription").value.trim(),
-      endereco: document.getElementById("address").value.trim(),
-      categoria: document.getElementById("actionCategory").value,
-      publico_alvo: document.getElementById("publicTarget").value.trim(),
-      profissionais: document.getElementById("professionals").value.trim(),
-      cor_pin: document.getElementById("pinColor").value,
-      latitude: resolvedLocation.lat,
-      longitude: resolvedLocation.lng,
-      contato: {
-        telefone: "",
-        email: "",
+    titulo: document.getElementById("actionName").value.trim(),
+    descricao: document.getElementById("actionDescription").value.trim(),
+    endereco: document.getElementById("address").value.trim(),
+    categoria: document.getElementById("actionCategory").value,
+    publico_alvo: document.getElementById("publicTarget").value.trim(),
+    profissionais: document.getElementById("professionals").value.trim(),
+    cor_pin: document.getElementById("pinColor").value,
+    latitude: resolvedLocation.lat,
+    longitude: resolvedLocation.lng,
+    contato: {
+        telefone: document.getElementById("contactPhone").value.trim(),
+        email: document.getElementById("contactEmail").value.trim(),
         site: "",
-      },
-      horario_funcionamento: "",
-    };
+    },
+    responsavel: document.getElementById("responsible").value.trim(),
+    horario_funcionamento: "",
+};
 
     const result = await API.saveLocation(
       locationData,
