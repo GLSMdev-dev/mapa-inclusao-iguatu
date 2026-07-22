@@ -237,47 +237,58 @@ function setupDetailMap(location) {
 
 // ===== EVENTOS DE AÇÃO =====
 function setupDetailEvents(location) {
-  // Editar
-  const editBtn = document.getElementById("editBtn");
-  if (editBtn) {
-    editBtn.addEventListener("click", () => {
-      window.location.href = `cadastro.html?id=${location.id}`;
-    });
-  }
+    // Editar
+    const editBtn = document.getElementById("editBtn");
+    if (editBtn) {
+        editBtn.addEventListener("click", async () => {
+            // Verificar senha antes de editar
+            const senhaOk = await verificarSenha("editar esta ação");
+            if (senhaOk) {
+                window.location.href = `cadastro.html?id=${location.id}`;
+            }
+        });
+    }
 
-  // Excluir
-  const deleteBtn = document.getElementById("deleteBtn");
-  if (deleteBtn) {
-    deleteBtn.addEventListener("click", async () => {
-      if (
-        confirm(
-          `Tem certeza que deseja excluir "${location.titulo}"? Esta ação não pode ser desfeita.`,
-        )
-      ) {
-        try {
-          deleteBtn.disabled = true;
-          deleteBtn.innerHTML =
-            '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+    // Excluir
+    const deleteBtn = document.getElementById("deleteBtn");
+    if (deleteBtn) {
+        deleteBtn.addEventListener("click", async () => {
+            // Verificar senha antes de excluir
+            const senhaOk = await verificarSenha("excluir esta ação");
+            if (!senhaOk) {
+                return;
+            }
+            
+            // Segunda confirmação (já existente)
+            if (
+                confirm(
+                    `Tem certeza que deseja excluir "${location.titulo}"? Esta ação não pode ser desfeita.`,
+                )
+            ) {
+                try {
+                    deleteBtn.disabled = true;
+                    deleteBtn.innerHTML =
+                        '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
 
-          await API.delete(location.id);
+                    await API.delete(location.id);
 
-          Utils.showNotification(
-            "Localização excluída com sucesso!",
-            "success",
-          );
+                    Utils.showNotification(
+                        "Localização excluída com sucesso!",
+                        "success",
+                    );
 
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1500);
-        } catch (error) {
-          Logger.error("Erro ao excluir localização", error);
-          Utils.showNotification("Erro ao excluir localização", "error");
-          deleteBtn.disabled = false;
-          deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Excluir';
-        }
-      }
-    });
-  }
+                    setTimeout(() => {
+                        window.location.href = "index.html";
+                    }, 1500);
+                } catch (error) {
+                    Logger.error("Erro ao excluir localização", error);
+                    Utils.showNotification("Erro ao excluir localização", "error");
+                    deleteBtn.disabled = false;
+                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Excluir';
+                }
+            }
+        });
+    }
 }
 
 // ===== ESTILOS ADICIONAIS =====
