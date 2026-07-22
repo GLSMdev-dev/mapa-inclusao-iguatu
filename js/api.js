@@ -471,45 +471,45 @@ class FirebaseAPI {
     this.checkInitialized();
     Logger.info("Garantindo categorias do Projeto PertenSer...");
 
-    const defaultCategories = [
-      {
+   const defaultCategories = [
+    {
         id: "clinicas-servicos",
         nome: "Clínicas e Serviços",
         icone: "🏥",
         cor: "#2ecc71",
-      },
-      {
+    },
+    {
         id: "salas-atendimento-educacional-especializado",
         nome: "Salas de Atendimento Educacional Especializado",
         icone: "🎓",
         cor: "#3498db",
-      },
-      {
+    },
+    {
         id: "projetos-inclusivos",
         nome: "Projetos Inclusivos",
         icone: "🤝",
         cor: "#9b59b6",
-      },
-      {
+    },
+    {
         id: "associacoes",
         nome: "Associações",
         icone: "🏛️",
         cor: "#e67e22",
-      },
-      {
+    },
+    {
         id: "servicos-publicos-saude-mental",
         nome: "Serviços Públicos de Saúde Mental",
         icone: "🧠",
         cor: "#16a085",
-      },
-      // NOVA CATEGORIA
+    },
+    // NOVA CATEGORIA
     {
         id: "turismo-servicos",
         nome: "Turismo e Serviços",
         icone: "✈️",
         cor: "#f39c12",
     },
-    ];
+];
 
     try {
       const existing = await this.getCategories();
