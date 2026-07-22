@@ -2,36 +2,33 @@ name: Deploy para GitHub Pages
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+    
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
-
+        
       - name: Gerar config.js a partir de secrets
         run: |
           cat > js/config.js << EOF
-          // Configuração do Firebase
           window.FIREBASE_CONFIG = {
             apiKey: "${{ secrets.FIREBASE_API_KEY }}",
             authDomain: "${{ secrets.FIREBASE_PROJECT_ID }}.firebaseapp.com",
             projectId: "${{ secrets.FIREBASE_PROJECT_ID }}",
-            storageBucket: "${{ secrets.FIREBASE_PROJECT_ID }}.appspot.com",
+            storageBucket: "${{ secrets.FIREBASE_PROJECT_ID }}.firebasestorage.app",
             messagingSenderId: "${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}",
-            appId: "${{ secrets.FIREBASE_APP_ID }}",
-            measurementId: "${{ secrets.FIREBASE_MEASUREMENT_ID }}"
+            appId: "${{ secrets.FIREBASE_APP_ID }}"
           };
-
-          console.log('Firebase configurado com sucesso!');
+          console.log('✅ Firebase configurado com sucesso!');
           EOF
-
+          
       - name: Validar arquivos obrigatórios
         run: |
           required_files=(
@@ -47,28 +44,23 @@ jobs:
             js/logger.js
             js/utils.js
           )
-
+          
           for file in "${required_files[@]}"; do
             if [ ! -f "$file" ]; then
               echo "❌ Arquivo obrigatório não encontrado: $file"
               exit 1
             fi
           done
-
+          
           echo "✅ Todos os arquivos obrigatórios estão presentes"
-
+          
       - name: Deploy para GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
-          publish_branch: main
+          publish_branch: gh-pages
           force_orphan: true
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
           commit_message: "Deploy automático - ${{ github.sha }}"
-
-      - name: Notificar sucesso
-        run: |
-          echo "🚀 Deploy concluído com sucesso!"
-          echo "📱 Acesse: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
