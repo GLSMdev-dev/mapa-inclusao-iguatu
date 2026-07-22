@@ -6,31 +6,31 @@
 let currentLocation = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
-  Logger.info("Iniciando página de detalhes...");
+    Logger.info("Iniciando página de detalhes...");
 
-  try {
-    // Verificar configuração do Firebase
-    if (!window.FIREBASE_CONFIG) {
-      throw new Error("Firebase não configurado");
-    }
+    try {
+        // Verificar configuração do Firebase
+        if (!window.FIREBASE_CONFIG) {
+            throw new Error("Firebase não configurado");
+        }
 
-    // Inicializar Firebase
-    API.init(window.FIREBASE_CONFIG);
+        // Inicializar Firebase
+        API.init(window.FIREBASE_CONFIG);
 
-    // Inicializar categorias
-    const categories = await API.createDefaultCategories();
-    if (window.MapaApp) {
-      MapaApp.setCategories(categories);
-    }
+        // Inicializar categorias
+        const categories = await API.createDefaultCategories();
+        if (window.MapaApp) {
+            MapaApp.setCategories(categories);
+        }
 
-    // Obter ID da URL
-    const urlParams = Utils.getURLParams();
-    const id = urlParams.id;
+        // Obter ID da URL
+        const urlParams = Utils.getURLParams();
+        const id = urlParams.id;
 
-    if (!id) {
-      Utils.showNotification("ID da localização não fornecido", "error");
-      document.getElementById("loadingContainer").style.display = "none";
-      document.getElementById("detailsContentInner").innerHTML = `
+        if (!id) {
+            Utils.showNotification("ID da localização não fornecido", "error");
+            document.getElementById("loadingContainer").style.display = "none";
+            document.getElementById("detailsContentInner").innerHTML = `
                 <div class="error-state">
                     <i class="fas fa-exclamation-triangle"></i>
                     <h2>Localização não encontrada</h2>
@@ -40,48 +40,48 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </button>
                 </div>
             `;
-      return;
+            return;
+        }
+
+        // Carregar dados
+        await loadDetails(id);
+
+        Logger.info("Detalhes carregados com sucesso");
+    } catch (error) {
+        Logger.error("Erro ao carregar detalhes", error);
+        Utils.showNotification("Erro ao carregar detalhes", "error");
     }
-
-    // Carregar dados
-    await loadDetails(id);
-
-    Logger.info("Detalhes carregados com sucesso");
-  } catch (error) {
-    Logger.error("Erro ao carregar detalhes", error);
-    Utils.showNotification("Erro ao carregar detalhes", "error");
-  }
 });
 
 // ===== CARREGAR DETALHES =====
 async function loadDetails(id) {
-  try {
-    // Mostrar loading
-    document.getElementById("loadingContainer").style.display = "flex";
-    document.getElementById("detailsContentInner").style.display = "none";
+    try {
+        // Mostrar loading
+        document.getElementById("loadingContainer").style.display = "flex";
+        document.getElementById("detailsContentInner").style.display = "none";
 
-    // Buscar localização
-    currentLocation = await API.getById(id);
+        // Buscar localização
+        currentLocation = await API.getById(id);
 
-    if (!currentLocation) {
-      throw new Error("Localização não encontrada");
-    }
+        if (!currentLocation) {
+            throw new Error("Localização não encontrada");
+        }
 
-    // Preencher dados
-    populateDetails(currentLocation);
+        // Preencher dados
+        populateDetails(currentLocation);
 
-    // Esconder loading e mostrar conteúdo
-    document.getElementById("loadingContainer").style.display = "none";
-    document.getElementById("detailsContentInner").style.display = "block";
+        // Esconder loading e mostrar conteúdo
+        document.getElementById("loadingContainer").style.display = "none";
+        document.getElementById("detailsContentInner").style.display = "block";
 
-    // Configurar eventos
-    setupDetailEvents(currentLocation);
+        // Configurar eventos
+        setupDetailEvents(currentLocation);
 
-    Logger.info(`Detalhes da localização ${id} carregados`);
-  } catch (error) {
-    Logger.error(`Erro ao carregar detalhes ${id}`, error);
-    document.getElementById("loadingContainer").style.display = "none";
-    document.getElementById("detailsContentInner").innerHTML = `
+        Logger.info(`Detalhes da localização ${id} carregados`);
+    } catch (error) {
+        Logger.error(`Erro ao carregar detalhes ${id}`, error);
+        document.getElementById("loadingContainer").style.display = "none";
+        document.getElementById("detailsContentInner").innerHTML = `
             <div class="error-state">
                 <i class="fas fa-exclamation-triangle"></i>
                 <h2>Localização não encontrada</h2>
@@ -91,8 +91,9 @@ async function loadDetails(id) {
                 </button>
             </div>
         `;
-  }
+    }
 }
+
 // ===== VERIFICAÇÃO DE SENHA =====
 /**
  * Verifica se a senha está correta
@@ -129,122 +130,119 @@ async function verificarSenha(acao = "realizar esta ação") {
 
 // ===== POPULAR DETALHES =====
 function populateDetails(location) {
+    // Título e categoria
+    document.getElementById("detailTitulo").textContent =
+        location.titulo || "Sem título";
 
-// ===== POPULAR DETALHES =====
-function populateDetails(location) {
-  // Título e categoria
-  document.getElementById("detailTitulo").textContent =
-    location.titulo || "Sem título";
+    const category = window.MapaApp?.categories?.find((c) => c.id === location.categoria);
+    const categoryName = category ? category.nome : location.categoria;
+    const categoryColor = location.cor_pin || (category ? category.cor : "#3498db");
+    const categoryIcon = category ? category.icone : "📍";
 
-  const category = window.MapaApp?.categories?.find((c) => c.id === location.categoria);
-  const categoryName = category ? category.nome : location.categoria;
-  const categoryColor = location.cor_pin || (category ? category.cor : "#3498db");
-  const categoryIcon = category ? category.icone : "📍";
+    const badge = document.getElementById("detailCategoria");
+    badge.textContent = `${categoryIcon} ${categoryName}`;
+    badge.style.backgroundColor = categoryColor;
 
-  const badge = document.getElementById("detailCategoria");
-  badge.textContent = `${categoryIcon} ${categoryName}`;
-  badge.style.backgroundColor = categoryColor;
+    // Descrição
+    document.getElementById("detailDescricao").textContent =
+        location.descricao || "Sem descrição";
 
-  // Descrição
-  document.getElementById("detailDescricao").textContent =
-    location.descricao || "Sem descrição";
+    // Endereço
+    document.getElementById("detailEndereco").textContent =
+        location.endereco || "Não informado";
 
-  // Endereço
-  document.getElementById("detailEndereco").textContent =
-    location.endereco || "Não informado";
+    // Informações adicionais
+    document.getElementById("detailPublicoAlvo").textContent =
+        location.publico_alvo || "Não informado";
 
-  // Informações adicionais
-  document.getElementById("detailPublicoAlvo").textContent =
-    location.publico_alvo || "Não informado";
+    document.getElementById("detailProfissionais").textContent =
+        location.profissionais || "Não informado";
 
-  document.getElementById("detailProfissionais").textContent =
-    location.profissionais || "Não informado";
+    // Data de criação
+    document.getElementById("detailDataCriacao").textContent =
+        location.data_criacao
+            ? Utils.formatDate(
+                location.data_criacao.toDate
+                    ? location.data_criacao.toDate()
+                    : location.data_criacao,
+            )
+            : "Não informado";
 
-  // Data de criação
-  document.getElementById("detailDataCriacao").textContent =
-    location.data_criacao
-      ? Utils.formatDate(
-          location.data_criacao.toDate
-            ? location.data_criacao.toDate()
-            : location.data_criacao,
-        )
-      : "Não informado";
-
-  // Galeria de imagens
-  if (location.imagens && location.imagens.length > 0) {
-    setupGallery(location.imagens);
-  } else {
-    document.getElementById("galleryContainer").innerHTML = `
+    // Galeria de imagens
+    if (location.imagens && location.imagens.length > 0) {
+        setupGallery(location.imagens);
+    } else {
+        document.getElementById("galleryContainer").innerHTML = `
             <div class="no-images">
                 <i class="fas fa-image"></i>
                 <p>Nenhuma imagem disponível</p>
             </div>
         `;
-  }
+    }
 
-  // Mapa
-  setupDetailMap(location);
+    // Mapa
+    setupDetailMap(location);
 }
 
 // ===== GALERIA =====
 function setupGallery(images) {
-  const mainImage = document.getElementById("mainImage");
-  const thumbnails = document.getElementById("galleryThumbnails");
+    const mainImage = document.getElementById("mainImage");
+    const thumbnails = document.getElementById("galleryThumbnails");
 
-  if (!mainImage || !thumbnails) return;
+    if (!mainImage || !thumbnails) return;
 
-  // Primeira imagem como principal
-  mainImage.src = images[0];
-  mainImage.alt = "Imagem principal";
+    // Primeira imagem como principal
+    mainImage.src = images[0];
+    mainImage.alt = "Imagem principal";
 
-  // Thumbnails
-  thumbnails.innerHTML = "";
-  images.forEach((url, index) => {
-    const img = document.createElement("img");
-    img.src = url;
-    img.alt = `Imagem ${index + 1}`;
-    img.className = index === 0 ? "active" : "";
-    img.dataset.index = index;
+    // Thumbnails
+    thumbnails.innerHTML = "";
+    images.forEach((url, index) => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = `Imagem ${index + 1}`;
+        img.className = index === 0 ? "active" : "";
+        img.dataset.index = index;
 
-    img.addEventListener("click", () => {
-      // Atualizar imagem principal
-      mainImage.src = url;
+        img.addEventListener("click", () => {
+            // Atualizar imagem principal
+            mainImage.src = url;
 
-      // Atualizar active
-      document.querySelectorAll("#galleryThumbnails img").forEach((el) => {
-        el.classList.remove("active");
-      });
-      img.classList.add("active");
+            // Atualizar active
+            document.querySelectorAll("#galleryThumbnails img").forEach((el) => {
+                el.classList.remove("active");
+            });
+            img.classList.add("active");
+        });
+
+        thumbnails.appendChild(img);
     });
-
-    thumbnails.appendChild(img);
-  });
 }
 
 // ===== MAPA DE DETALHES =====
 function setupDetailMap(location) {
-  const mapElement = document.getElementById("detailMap");
-  if (!mapElement) return;
+    const mapElement = document.getElementById("detailMap");
+    if (!mapElement) return;
 
-  // Criar mapa
-  const map = L.map(mapElement, {
-    center: [location.latitude, location.longitude],
-    zoom: 15,
-    zoomControl: true,
-  });
+    // Criar mapa
+    const map = L.map(mapElement, {
+        center: [location.latitude, location.longitude],
+        zoom: 15,
+        zoomControl: true,
+    });
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
 
-  // Adicionar marcador
-  const categoryColor = window.MapaApp?.getCategoryColor?.(location.categoria) || location.cor_pin || "#3498db";
-  const categoryIcon = window.MapaApp?.getCategoryIcon?.(location.categoria) || "📍";
+    // Adicionar marcador
+    const categoryColor = window.MapaApp?.getCategoryColor?.(location.categoria) || location.cor_pin || "#3498db";
+    const categoryIcon = window.MapaApp?.getCategoryIcon?.(location.categoria) || "📍";
 
-  const icon = L.divIcon({
-    className: "detail-marker",
-    html: `
+    const icon = L.divIcon({
+        className: "detail-marker",
+        html: `
             <div style="
                 background-color: ${categoryColor};
                 width: 40px;
@@ -261,14 +259,14 @@ function setupDetailMap(location) {
                 ${categoryIcon}
             </div>
         `,
-    iconSize: [40, 40],
-    iconAnchor: [20, 20],
-  });
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+    });
 
-  L.marker([location.latitude, location.longitude], { icon })
-    .addTo(map)
-    .bindPopup(`<strong>${Utils.sanitizeHTML(location.titulo)}</strong>`)
-    .openPopup();
+    L.marker([location.latitude, location.longitude], { icon })
+        .addTo(map)
+        .bindPopup(`<strong>${Utils.sanitizeHTML(location.titulo)}</strong>`)
+        .openPopup();
 }
 
 // ===== EVENTOS DE AÇÃO =====
