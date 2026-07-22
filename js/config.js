@@ -14,5 +14,5 @@ window.FIREBASE_CONFIG = {
 window.APP_CONFIG = {
     // Senha para editar e excluir ações
     // ⚠️ ALTERE ESTA SENHA PARA UMA MAIS SEGURA
-    adminPassword: "pertencer2024"
+    adminPassword: "PertenSer26"
 };
