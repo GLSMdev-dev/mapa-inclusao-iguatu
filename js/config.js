@@ -4,6 +4,5 @@ window.FIREBASE_CONFIG = {
     projectId: "mapadainclusao",
     storageBucket: "mapadainclusao.firebasestorage.app",
     messagingSenderId: "206884689169",
-    appId: "1:206884689169:web:72d14597636d403386e8b0",
-    measurementId: "G-LVGWLX44EE"
+    appId: "1:206884689169:web:72d14597636d403386e8b0"
 };
