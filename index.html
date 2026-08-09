@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="css/style.css?v=20260703" />
   </head>
-  <body class="map-page">
+  <body>
     <!-- Navbar -->
     <nav class="navbar">
       <div class="nav-container">
@@ -50,7 +50,7 @@
     <!-- Container Principal -->
     <div class="main-container">
       
-      <!-- ZONA DE HOVER INVISÍVEL (Garante a ativação por mouse) -->
+      <!-- ZONA DE HOVER INVISÍVEL -->
       <div class="sidebar-hover-zone"></div>
 
       <!-- BOTÃO TRIGGER DA SIDEBAR (Seta) -->
@@ -61,8 +61,8 @@
       <!-- SIDEBAR -->
       <aside class="sidebar" id="sidebar">
         <div class="filters-container">
-          <div class="sidebar-actions">
-            <button type="button" class="btn btn-primary" id="pickLocationHint">
+          <div class="sidebar-actions" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+            <button type="button" class="btn btn-primary btn-block" id="pickLocationHint">
               <i class="fas fa-map-marker-alt"></i> Marcar nova ação
             </button>
             <button type="button" class="btn btn-secondary hidden" id="cancelAddMode">
@@ -111,7 +111,7 @@
         </div>
       </aside>
 
-      <!-- Conteúdo Principal (Apenas o Mapa) -->
+      <!-- Conteúdo Principal (Mapa) -->
       <main class="content">
         <div id="map" class="map-container"></div>
       </main>
