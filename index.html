@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mapa da Inclusão - Iguatu/CE</title>
+    <title>PertenSer - Mapa da Inclusão Iguatu/CE</title>
 
     <!-- Leaflet CSS -->
     <link
@@ -18,43 +18,61 @@
     />
 
     <!-- Estilos Personalizados -->
-    <link rel="stylesheet" href="css/style.css?v=20260703" />
+    <link rel="stylesheet" href="css/style.css?v=20260809" />
   </head>
   <body>
-<!-- Navbar -->
-<nav class="navbar">
-  <div class="nav-container">
-    <a href="index.html" class="nav-brand">
-      <div class="brand-mark">
-        <img src="assets/logo.jpeg" alt="PertenSer" onerror="this.style.display='none'" />
-      </div>
-      <div class="brand-text">
-        <span class="brand-name">Perten<span>Ser</span></span>
-        <small class="brand-sub">Vozes, Identidades e Futuros</small>
-      </div>
-    </a>
-    <button class="nav-toggle" id="navToggle">
-      <i class="fas fa-bars"></i>
-    </button>
-    <ul class="nav-menu" id="navMenu">
-      <li>
-        <a href="index.html" class="active"
-          ><i class="fas fa-map"></i> Mapa</a
-        >
-      </li>
-      <li>
-        <button type="button" class="nav-link-btn" id="openRegisterModal">
-          <i class="fas fa-plus-circle"></i> Cadastrar
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="nav-brand">
+          <div class="brand-mark">
+            <img src="assets/logo.png" alt="PertenSer" onerror="this.style.display='none'" />
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Perten<span>Ser</span></span>
+            <small class="brand-sub">Vozes, Identidades e Futuros</small>
+          </div>
+        </a>
+        <button class="nav-toggle" id="navToggle">
+          <i class="fas fa-bars"></i>
         </button>
-      </li>
-      <li>
-        <a href="configuracao.html"
-          ><i class="fas fa-cog"></i> Configurações</a
-        >
-      </li>
-    </ul>
-  </div>
-</nav>
+        <ul class="nav-menu" id="navMenu">
+          <li>
+            <a href="index.html" class="active"
+              ><i class="fas fa-map"></i> Mapa</a
+            >
+          </li>
+          <li>
+            <button type="button" class="nav-link-btn" id="openRegisterModal">
+              <i class="fas fa-plus-circle"></i> Cadastrar
+            </button>
+          </li>
+          <li>
+            <a href="configuracao.html"
+              ><i class="fas fa-cog"></i> Configurações</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- ===== BANNER HERO - PROJETO PERTENSER ===== -->
+    <section class="hero-banner">
+        <div class="hero-content">
+            <img src="assets/logo.png" alt="PertenSer" class="hero-logo" onerror="this.style.display='none'" />
+            <h1 class="hero-title">Perten<span>Ser</span></h1>
+            <p class="hero-subtitle">Vozes, Identidades e Futuros</p>
+            <div class="hero-tagline">
+                <span class="tag-yellow">🎙️ VOZES<br><small>A escuta que transforma</small></span>
+                <span class="tag-purple">👥 IDENTIDADES<br><small>Quem somos, nossa força</small></span>
+                <span class="tag-orange">🚀 FUTUROS<br><small>Ideias que hoje, mudanças amanhã</small></span>
+                <span class="tag-pink">🤝 JUNTOS<br><small>Construímos possibilidades</small></span>
+            </div>
+            <div class="hero-motto">
+                JUVENTUDE QUE PARTICIPA, TRANSFORMA E FAZ ACONTECER!
+            </div>
+        </div>
+    </section>
 
     <!-- Container Principal -->
     <div class="main-container">
@@ -255,11 +273,11 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
-    <script src="js/config.js?v=20260703"></script>
-    <script src="js/logger.js?v=20260703"></script>
-    <script src="js/utils.js?v=20260703"></script>
-    <script src="js/api.js?v=20260703"></script>
-    <script src="js/mapa.js?v=20260703"></script>
-    <script src="js/app.js?v=20260703"></script>
+    <script src="js/config.js?v=20260809"></script>
+    <script src="js/logger.js?v=20260809"></script>
+    <script src="js/utils.js?v=20260809"></script>
+    <script src="js/api.js?v=20260809"></script>
+    <script src="js/mapa.js?v=20260809"></script>
+    <script src="js/app.js?v=20260809"></script>
   </body>
 </html>
