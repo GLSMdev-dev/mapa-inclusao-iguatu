@@ -198,7 +198,7 @@ function setupEvents() {
     }
   });
 
-  // EVENTO PARA O DROPDOWN DE ESTATÍSTICAS
+  // ===== EVENTO PARA O DROPDOWN DE ESTATÍSTICAS =====
   const statsToggle = document.getElementById("statsToggle");
   if (statsToggle) {
     statsToggle.addEventListener("click", () => {
@@ -211,38 +211,35 @@ function setupEvents() {
         }
     });
   }
-  // ===== EVENTO PARA ABRIR/FECHAR SIDEBAR =====
-const sidebarTrigger = document.getElementById("sidebar-trigger");
-const sidebar = document.getElementById("sidebar");
 
-if (sidebarTrigger && sidebar) {
-    // Abrir/Fechar ao clicar na seta
-    sidebarTrigger.addEventListener("click", () => {
-        const isOpen = sidebar.classList.contains("open");
-        if (isOpen) {
-            sidebar.classList.remove("open");
-            sidebarTrigger.classList.remove("open");
-        } else {
-            sidebar.classList.add("open");
-            sidebarTrigger.classList.add("open");
-        }
-    });
+  // ===== SIDEBAR: CLIQUE E HOVER =====
+  const sidebarTrigger = document.getElementById("sidebar-trigger");
+  const sidebar = document.getElementById("sidebar");
 
-    // Opcional: Abrir ao passar o mouse na seta (se quiser manter o hover também)
-    sidebarTrigger.addEventListener("mouseenter", () => {
-        // Só abre se não estiver aberta
-        if (!sidebar.classList.contains("open")) {
-            sidebar.classList.add("open");
-            sidebarTrigger.classList.add("open");
-        }
-    });
-    
-    // Fechar ao sair da sidebar
-    sidebar.addEventListener("mouseleave", () => {
-        sidebar.classList.remove("open");
-        sidebarTrigger.classList.remove("open");
-    });
-}
+  if (sidebarTrigger && sidebar) {
+      // 1. Funcionalidade de Clique na Seta
+      sidebarTrigger.addEventListener("click", (e) => {
+          e.stopPropagation(); // Evita conflitos
+          const isOpen = sidebar.classList.contains("open");
+          if (isOpen) {
+              sidebar.classList.remove("open");
+              sidebarTrigger.classList.remove("open");
+          } else {
+              sidebar.classList.add("open");
+              sidebarTrigger.classList.add("open");
+          }
+      });
+
+      // 2. Funcionalidade de Fechar ao clicar fora
+      document.addEventListener("click", (e) => {
+          if (sidebar.classList.contains("open") && 
+              !sidebar.contains(e.target) && 
+              !sidebarTrigger.contains(e.target)) {
+              sidebar.classList.remove("open");
+              sidebarTrigger.classList.remove("open");
+          }
+      });
+  }
 }
 
 function populateCategoryFilter(categories) {
