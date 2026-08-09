@@ -101,6 +101,8 @@ body {
   color: var(--gray-800);
   line-height: 1.6;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ===== NAVBAR ===== */
@@ -236,12 +238,38 @@ body {
   color: var(--primary-dark);
 }
 
+/* ===== NOVO: BANNER ===== */
+.banner-container {
+  width: 100%;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.banner-container img {
+  width: 100%;
+  max-width: 1400px;
+  height: auto;
+  max-height: 350px; /* Ajuste conforme a altura da sua imagem */
+  object-fit: cover;
+  display: block;
+}
+
 /* ===== MAIN CONTAINER ===== */
 .main-container {
   display: flex;
+  flex: 1;
+  height: calc(100vh - 72px - 350px); /* Ajustar altura baseado no banner */
+  max-height: calc(100vh - 72px - 350px);
+  overflow: hidden;
+}
+
+/* Quando não houver banner (ex: páginas internas), ajustar altura */
+.no-banner .main-container {
   height: calc(100vh - 72px);
   max-height: calc(100vh - 72px);
-  overflow: hidden;
 }
 
 /* ===== SIDEBAR ===== */
@@ -1292,6 +1320,29 @@ body.modal-open {
   margin-bottom: var(--spacing-xs);
 }
 
+/* ===== NOVO: RODAPÉ ===== */
+.site-footer {
+  background-color: #fff;
+  padding: 20px 0;
+  margin-top: auto;
+  border-top: 1px solid #eef2f7;
+  text-align: center;
+  width: 100%;
+}
+
+.footer-img-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-img-container img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
 /* ===== LOADING ===== */
 .loading-container {
   display: flex;
@@ -1399,6 +1450,17 @@ body.modal-open {
     flex-direction: column;
     height: auto;
     max-height: none;
+  }
+
+  /* Ajuste do banner no mobile */
+  .banner-container img {
+    max-height: 200px;
+  }
+  
+  /* Ajuste da altura do container principal no mobile */
+  .main-container {
+    height: auto !important;
+    max-height: none !important;
   }
 
   .sidebar {
@@ -1521,6 +1583,10 @@ body.modal-open {
 
   .gallery-thumbnails img {
     height: 60px;
+  }
+  
+  .banner-container img {
+    max-height: 150px;
   }
 }
 
