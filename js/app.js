@@ -197,6 +197,20 @@ function setupEvents() {
       openModal();
     }
   });
+
+  // EVENTO PARA O DROPDOWN DE ESTATÍSTICAS
+  const statsToggle = document.getElementById("statsToggle");
+  if (statsToggle) {
+    statsToggle.addEventListener("click", () => {
+        const content = document.getElementById("statsContentWrapper");
+        const isExpanded = statsToggle.getAttribute("aria-expanded") === "true";
+        
+        statsToggle.setAttribute("aria-expanded", !isExpanded);
+        if (content) {
+            content.classList.toggle("open");
+        }
+    });
+  }
 }
 
 function populateCategoryFilter(categories) {
@@ -538,8 +552,8 @@ function updateLocationsList(locations) {
 
   if (locations.length === 0) {
     container.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-map-marker-alt"></i>
+      <div class="empty-state" style="text-align:center; padding:20px; color:var(--gray-500);">
+        <i class="fas fa-map-marker-alt" style="font-size:24px; margin-bottom:10px; display:block;"></i>
         <p>Nenhuma ação inclusiva cadastrada ainda.</p>
       </div>
     `;
@@ -587,20 +601,16 @@ async function updateStats() {
       totalElement.textContent = stats.total;
     }
 
-    // Limpar estatísticas anteriores (mantendo o container)
     const statsContent = document.getElementById("statsContent");
     if (!statsContent) return;
     
-    // Limpar apenas os itens, mantendo o título se houver
     statsContent.innerHTML = '';
 
-    // Verificar se há categorias
     if (Object.keys(stats.categories).length === 0) {
         statsContent.innerHTML = '<div class="stat-item"><span>Nenhuma categoria encontrada</span></div>';
         return;
     }
 
-    // Gerar HTML para cada categoria dinamicamente
     let html = '';
     for (const [id, catData] of Object.entries(stats.categories)) {
         const icon = catData.icone || '📌';
@@ -633,9 +643,9 @@ function showLoading(show) {
 
   if (show) {
     container.innerHTML = `
-      <div class="loading-container">
-        <div class="spinner"></div>
-        <p>Carregando ações inclusivas...</p>
+      <div class="loading-container" style="text-align:center; padding:40px;">
+        <div class="spinner" style="margin: 0 auto 10px;"></div>
+        <p style="color: var(--gray-500);">Carregando ações inclusivas...</p>
       </div>
     `;
   }
