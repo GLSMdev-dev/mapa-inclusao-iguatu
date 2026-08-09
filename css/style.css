@@ -238,7 +238,7 @@ body {
   color: var(--primary-dark);
 }
 
-/* ===== NOVO: BANNER ===== */
+/* ===== BANNER ===== */
 .banner-container {
   width: 100%;
   background-color: #fff;
@@ -1320,7 +1320,7 @@ body.modal-open {
   margin-bottom: var(--spacing-xs);
 }
 
-/* ===== NOVO: RODAPÉ ===== */
+/* ===== RODAPÉ ===== */
 .site-footer {
   background-color: #fff;
   padding: 20px 0;
