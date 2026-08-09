@@ -97,7 +97,17 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Páginas que usam mapa (Index) - Barra de rolagem escondida */
+body.map-page {
   overflow: hidden;
+}
+
+/* Páginas de conteúdo (Detalhes, Cadastro, Config) - Barra de rolagem liberada */
+body.scrollable-page {
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* ===== NAVBAR ===== */
@@ -106,7 +116,7 @@ body {
   color: white;
   padding: var(--spacing-sm) 0;
   position: relative;
-  z-index: 100; /* Z-index menor que a sidebar */
+  z-index: 100;
   box-shadow: var(--shadow-md);
   border-bottom: 3px solid var(--gold);
   flex-shrink: 0;
@@ -240,7 +250,7 @@ body {
   display: block;
 }
 
-/* ===== MAIN CONTAINER ===== */
+/* ===== MAIN CONTAINER (Index) ===== */
 .main-container {
   display: flex;
   flex: 1;
@@ -256,7 +266,7 @@ body {
   top: 0;
   bottom: 0;
   width: 40px;
-  z-index: 200; /* Acima do mapa, abaixo da sidebar */
+  z-index: 200;
   cursor: pointer;
 }
 
@@ -277,7 +287,7 @@ body {
   font-size: 14px;
   box-shadow: var(--shadow-md);
   cursor: pointer;
-  z-index: 5000; /* Muito alto para garantir que apareça */
+  z-index: 5000;
   transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   border: none;
   outline: none;
@@ -293,14 +303,14 @@ body {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 480px; /* Largura */
+  width: 480px;
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   padding: var(--spacing-xl);
   overflow-y: auto;
   box-shadow: var(--shadow-sidebar);
-  z-index: 1000; /* Acima do mapa e da zona de hover */
+  z-index: 1000;
   transform: translateX(-105%);
   transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   border-right: 1px solid rgba(255,255,255,0.2);
@@ -631,7 +641,7 @@ body {
   font-size: var(--font-size-xs);
 }
 
-/* ===== CONTENT ===== */
+/* ===== CONTENT (Index) ===== */
 .content {
   flex: 1;
   display: flex;
@@ -815,7 +825,7 @@ body.modal-open {
   }
 }
 
-/* ===== OUTRAS PÁGINAS (Cadastro/Detalhes) ===== */
+/* ===== OUTRAS PÁGINAS (Cadastro, Detalhes, Config) ===== */
 .editor-shell, .details-container, .config-container {
   flex: 1;
   overflow-y: auto;
@@ -827,11 +837,174 @@ body.modal-open {
 
 .editor-card, .details-card, .config-card {
   margin-bottom: 20px;
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
 }
 
 .no-sidebar .main-container {
   height: auto;
   overflow-y: auto;
+}
+
+/* ===== DETALHES (Correção de exibição) ===== */
+.details-container {
+  padding: 20px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.details-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  margin-bottom: 20px;
+  display: block !important; /* Força a exibição */
+}
+
+.details-header {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.details-actions {
+  display: flex !important;
+  gap: var(--spacing-sm);
+}
+
+.details-title-section {
+  display: flex !important;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.details-info-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-md);
+  background-color: var(--gray-100);
+  border-radius: var(--radius-md);
+}
+
+.info-item {
+  display: flex !important;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.info-item i {
+  color: var(--secondary);
+  font-size: var(--font-size-lg);
+  margin-top: var(--spacing-xs);
+}
+
+.info-item label {
+  font-weight: 600;
+  color: var(--gray-700);
+  font-size: var(--font-size-sm);
+}
+
+.info-item p {
+  color: var(--gray-800);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.details-description {
+  margin-bottom: var(--spacing-xl);
+  display: block !important;
+}
+
+.details-description h3 {
+  color: var(--primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.details-description p {
+  color: var(--gray-700);
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.details-map {
+  margin-bottom: var(--spacing-xl);
+  display: block !important;
+}
+
+.details-map h3 {
+  color: var(--primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.detail-map-container {
+  width: 100%;
+  height: 400px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--gray-300);
+}
+
+.gallery-container {
+  margin-bottom: var(--spacing-xl);
+  display: block !important;
+}
+
+.gallery-main {
+  width: 100%;
+  height: 400px;
+  background-color: var(--gray-200);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--spacing-sm);
+}
+
+.gallery-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery-thumbnails {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.gallery-thumbnails img {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+}
+
+.gallery-thumbnails img:hover {
+  border-color: var(--secondary);
+}
+
+.gallery-thumbnails img.active {
+  border-color: var(--gold);
+}
+
+.category-badge {
+  display: inline-block !important;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-weight: bold;
+  color: white;
+  font-size: var(--font-size-sm);
 }
 
 /* ===== RODAPÉ ===== */
