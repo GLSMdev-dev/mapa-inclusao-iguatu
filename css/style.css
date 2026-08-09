@@ -61,7 +61,7 @@
   --shadow-lg: 0 10px 15px rgba(13, 43, 69, 0.1);
   --shadow-xl: 0 20px 25px rgba(13, 43, 69, 0.1);
   
-  --shadow-sidebar: 5px 0 15px rgba(0,0,0,0.15);
+  --shadow-sidebar: 5px 0 25px rgba(0,0,0,0.25);
 
   /* Tipografia */
   --font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -235,7 +235,7 @@ body {
   width: 100%;
   max-width: 1400px;
   height: auto;
-  max-height: 150px; /* Reduzido para dar mais espaço ao mapa */
+  max-height: 150px;
   object-fit: cover;
   display: block;
 }
@@ -244,67 +244,90 @@ body {
 .main-container {
   display: flex;
   flex: 1;
-  height: calc(100vh - 72px - 150px); /* Ajustado para o novo tamanho do banner */
+  height: calc(100vh - 72px - 150px);
   overflow: hidden;
   position: relative;
 }
 
-/* ===== SIDEBAR (OCULTA POR PADRÃO, APARECE NO HOVER) ===== */
-.sidebar {
-  position: absolute;
+/* ===== TRIGGER DA SIDEBAR (SETA FIXA) ===== */
+#sidebar-trigger {
+  position: fixed;
   left: 0;
-  top: 0;
-  bottom: 0;
-  width: 420px; /* Largura aumentada */
-  background-color: white;
-  padding: var(--spacing-lg);
-  overflow-y: auto;
-  box-shadow: var(--shadow-sidebar);
-  z-index: var(--z-sticky);
-  transform: translateX(-100%); /* Escondido */
-  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  border-right: 1px solid var(--gray-200);
-}
-
-/* A "aba" para interagir com o mouse */
-.sidebar::before {
-  content: '▶';
-  position: absolute;
-  right: -30px;
   top: 50%;
   transform: translateY(-50%);
-  width: 30px;
-  height: 60px;
+  width: 32px;
+  height: 80px;
   background: var(--primary-gradient);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 0 8px 8px 0;
-  font-size: 14px;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
+  font-size: 16px;
+  box-shadow: var(--shadow-md);
   cursor: pointer;
-  z-index: 10;
+  z-index: var(--z-sticky);
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: none;
+  outline: none;
 }
 
-/* Regras de Hover */
-.main-container:hover .sidebar,
-.sidebar:hover {
+#sidebar-trigger i {
+  transition: transform 0.4s ease;
+}
+
+/* Quando a sidebar está aberta, a seta se move e gira */
+#sidebar-trigger.open {
+  left: 480px; /* Move junto com a sidebar */
+}
+
+#sidebar-trigger.open i {
+  transform: rotate(180deg);
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 480px; /* Largura aumentada */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: var(--spacing-xl);
+  overflow-y: auto;
+  box-shadow: var(--shadow-sidebar);
+  z-index: calc(var(--z-sticky) - 1);
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-right: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Scrollbar estilizada para a sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: var(--radius-round);
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+/* Estado aberto da sidebar */
+.sidebar.open {
   transform: translateX(0);
-}
-
-/* Gira a seta quando a sidebar está aberta */
-.main-container:hover .sidebar::before,
-.sidebar:hover::before {
-  transform: translateY(-50%) rotate(180deg);
-  right: -30px;
 }
 
 .sidebar h3 {
   color: var(--primary);
-  margin-bottom: var(--spacing-md);
-  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-xl);
   border-bottom: 2px solid var(--gold);
   padding-bottom: var(--spacing-sm);
 }
@@ -383,31 +406,32 @@ body {
 /* ===== ESTATÍSTICAS EM DROPDOWN ===== */
 .stats-container {
   background-color: var(--gray-100);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--gray-200);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .stats-header {
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-md);
   background: transparent;
   border: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--primary);
   font-size: var(--font-size-md);
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 
 .stats-header:hover {
-  background-color: rgba(241, 196, 15, 0.1); /* Leve toque de ouro */
+  background-color: rgba(13, 43, 69, 0.05);
 }
 
-.stats-header i {
+.stats-header i.fa-chevron-down {
   color: var(--gold);
   transition: transform 0.3s ease;
 }
@@ -424,7 +448,7 @@ body {
 }
 
 .stats-content.open {
-  max-height: 500px; /* Altura máxima para o dropdown */
+  max-height: 500px;
   padding: 0 var(--spacing-md) var(--spacing-md) var(--spacing-md);
 }
 
@@ -440,7 +464,7 @@ body {
   align-items: center;
   padding: var(--spacing-xs) 0;
   font-size: var(--font-size-sm);
-  border-bottom: 1px dashed #e0e0e0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 .stat-item:last-child {
@@ -452,15 +476,16 @@ body {
   color: var(--secondary);
 }
 
-/* ===== LISTA DE LOCALIZAÇÕES NA SIDEBAR ===== */
+/* ===== LISTA DE LOCALIZAÇÕES ===== */
 .locations-list {
   background-color: white;
   padding: var(--spacing-md);
   overflow-y: auto;
   border: 1px solid var(--gray-200);
-  border-radius: var(--radius-md);
-  max-height: 55vh;
+  border-radius: var(--radius-lg);
+  max-height: 50vh;
   margin-top: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .list-header {
@@ -490,7 +515,7 @@ body {
 
 .locations-grid {
   display: grid;
-  grid-template-columns: 1fr; /* Uma coluna vertical */
+  grid-template-columns: 1fr;
   gap: var(--spacing-md);
 }
 
@@ -509,14 +534,14 @@ body {
 }
 
 .location-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
   border-color: var(--gold);
 }
 
 .location-card-image {
   width: 100%;
-  height: 140px;
+  height: 160px;
   background-color: var(--gray-200);
   overflow: hidden;
   position: relative;
@@ -592,7 +617,6 @@ body {
   overflow: hidden;
 }
 
-/* Ajuste para o mapa ocupar todo o espaço restante */
 .map-container {
   flex: 1;
   background-color: var(--gray-300);
@@ -860,7 +884,10 @@ body.modal-open {
 /* ===== RESPONSIVIDADE ===== */
 @media (max-width: 1024px) {
   .sidebar {
-    width: 380px;
+    width: 400px;
+  }
+  #sidebar-trigger.open {
+    left: 400px;
   }
 }
 
@@ -899,14 +926,15 @@ body.modal-open {
     box-shadow: none;
     border-bottom: 1px solid var(--gray-200);
     padding: var(--spacing-md);
+    backdrop-filter: none;
+    background: white;
   }
   
-  /* Esconder a seta no mobile */
-  .sidebar::before {
-    display: none;
+  #sidebar-trigger {
+    display: none; /* Esconder a seta no mobile */
   }
   
-  .main-container:hover .sidebar {
+  .sidebar.open {
     transform: translateX(0);
   }
   
