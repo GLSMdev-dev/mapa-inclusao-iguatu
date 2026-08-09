@@ -1107,13 +1107,14 @@ body.modal-open {
     position: relative;
     transform: translateX(0);
     width: 100%;
-    max-height: 50vh;
+    max-height: 40vh; /* MELHORIA: Reduzido para 40vh para dar mais espaço ao mapa */
     overflow-y: auto;
     box-shadow: none;
     border-bottom: 1px solid var(--gray-200);
     padding: var(--spacing-md);
     backdrop-filter: none;
     background: white;
+    z-index: 300; /* Garante que fique acima do mapa no mobile */
   }
   
   #sidebar-trigger, .sidebar-hover-zone {
