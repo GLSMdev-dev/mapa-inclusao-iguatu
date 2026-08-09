@@ -88,12 +88,10 @@ async function loadLocationForEdit(id) {
       document.getElementById("profissionais").value = location.profissionais || "";
       document.getElementById("latitude").value = location.latitude || "";
       document.getElementById("longitude").value = location.longitude || "";
-      document.getElementById("telefone").value =
-        location.contato?.telefone || "";
+      document.getElementById("telefone").value = location.contato?.telefone || "";
       document.getElementById("email").value = location.contato?.email || "";
       document.getElementById("site").value = location.contato?.site || "";
-      document.getElementById("horario").value =
-        location.horario_funcionamento || "";
+      document.getElementById("horario").value = location.horario_funcionamento || "";
     }
 
     // Mostrar imagens existentes
@@ -407,11 +405,11 @@ async function handleSubmit(e) {
       latitude: lat,
       longitude: lng,
       contato: {
-        telefone: "",
-        email: "",
-        site: "",
+        telefone: document.getElementById("telefone").value.trim(), // CORRIGIDO
+        email: document.getElementById("email").value.trim(),       // CORRIGIDO
+        site: document.getElementById("site").value.trim(),         // CORRIGIDO
       },
-      horario_funcionamento: "",
+      horario_funcionamento: document.getElementById("horario").value.trim(), // CORRIGIDO
       publico_alvo: document.getElementById("publicoAlvo").value.trim(),
       profissionais: document.getElementById("profissionais").value.trim(),
     };
