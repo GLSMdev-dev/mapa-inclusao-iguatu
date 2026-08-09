@@ -1,5 +1,5 @@
 let currentLocation = null;
-let detailMapInstance = null; // Guardar referência do mapa para não duplicar
+let detailMapInstance = null;
 
 document.addEventListener("DOMContentLoaded", async function () {
   Logger.info("Iniciando pagina de detalhes...");
@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     API.init(window.FIREBASE_CONFIG);
 
+    // Carregar categorias
     var categories = await API.createDefaultCategories();
     if (window.MapaApp) {
       MapaApp.setCategories(categories);
@@ -64,10 +65,15 @@ async function loadDetails(id) {
       throw new Error("Localizacao nao encontrada");
     }
 
+    // PREENCHER OS DADOS
     populateDetails(currentLocation);
+
     document.getElementById("loadingContainer").style.display = "none";
     document.getElementById("detailsContentInner").style.display = "block";
+    
+    // CONFIGURAR OS BOTÕES
     setupDetailEvents(currentLocation);
+    
     Logger.info("Detalhes da localizacao " + id + " carregados");
   } catch (error) {
     Logger.error("Erro ao carregar detalhes " + id, error);
@@ -103,12 +109,46 @@ async function verificarSenha(acao) {
   });
 }
 
-// ===== FUNÇÃO QUE PREENCHE TÍTULO, DESCRIÇÃO, ETC =====
 function populateDetails(location) {
-  // Título
-  document.getElementById("detailTitulo").textContent = location.titulo || "Sem titulo";
+  // --- DIAGNÓSTICO DE ELEMENTOS ---
+  // Esta função verifica se os IDs no HTML existem. Se algum sumir, ele vai aparecer no console e na tela.
+  const requiredElements = [
+    "detailTitulo", "detailCategoria", "detailDescricao", "detailEndereco",
+    "detailPublicoAlvo", "detailProfissionais", "detailTelefone", "detailEmail",
+    "detailSite", "detailHorario", "detailDataCriacao", "galleryContainer",
+    "detailMap"
+  ];
+  
+  let missingElements = [];
+  requiredElements.forEach(id => {
+    if (!document.getElementById(id)) {
+      missingElements.push(id);
+    }
+  });
 
-  // Categoria
+  if (missingElements.length > 0) {
+    console.error("🚨 ERRO CRÍTICO: Os seguintes IDs não existem no HTML:", missingElements);
+    document.getElementById("detailsContentInner").innerHTML = `
+      <div class="error-state" style="text-align:left; background:#fff3f3; border:2px solid red; padding:20px;">
+        <h2 style="color:red;">🚨 ERRO DE CONFIGURAÇÃO</h2>
+        <p><strong>Os seguintes elementos estão faltando no seu arquivo <code>detalhes.html</code>:</strong></p>
+        <ul style="font-family:monospace; font-size:14px;">
+          ${missingElements.map(id => `<li style="color:#d32f2f;">❌ ID: <strong>${id}</strong></li>`).join('')}
+        </ul>
+        <p style="margin-top:15px;">Verifique se o HTML da página <code>detalhes.html</code> foi alterado ou corrompido.</p>
+        <button onclick="window.location.reload()" class="btn btn-primary" style="margin-top:10px;">
+          <i class="fas fa-sync"></i> Recarregar
+        </button>
+      </div>
+    `;
+    return; // Para a execução aqui
+  }
+  // --- FIM DO DIAGNÓSTICO ---
+
+  // 1. Título
+  document.getElementById("detailTitulo").textContent = location.titulo || "Sem título";
+
+  // 2. Categoria
   var category = null;
   if (window.MapaApp && window.MapaApp.categories) {
     for (var i = 0; i < window.MapaApp.categories.length; i++) {
@@ -125,51 +165,51 @@ function populateDetails(location) {
   badge.textContent = categoryIcon + " " + categoryName;
   badge.style.backgroundColor = categoryColor;
 
-  // Descrição
-  document.getElementById("detailDescricao").textContent = location.descricao || "Sem descricao";
+  // 3. Descrição
+  document.getElementById("detailDescricao").textContent = location.descricao || "Sem descrição";
 
-  // Endereço
-  document.getElementById("detailEndereco").textContent = location.endereco || "Nao informado";
+  // 4. Endereço
+  document.getElementById("detailEndereco").textContent = location.endereco || "Não informado";
   
-  // Público-alvo
-  document.getElementById("detailPublicoAlvo").textContent = location.publico_alvo || "Nao informado";
+  // 5. Público-alvo
+  document.getElementById("detailPublicoAlvo").textContent = location.publico_alvo || "Não informado";
   
-  // Profissionais
-  document.getElementById("detailProfissionais").textContent = location.profissionais || "Nao informado";
+  // 6. Profissionais
+  document.getElementById("detailProfissionais").textContent = location.profissionais || "Não informado";
 
-  // Telefone
-  document.getElementById("detailTelefone").textContent = location.contato?.telefone || "Nao informado";
+  // 7. Telefone
+  document.getElementById("detailTelefone").textContent = location.contato?.telefone || "Não informado";
 
-  // Email
-  document.getElementById("detailEmail").textContent = location.contato?.email || "Nao informado";
+  // 8. Email
+  document.getElementById("detailEmail").textContent = location.contato?.email || "Não informado";
 
-  // Site
-  document.getElementById("detailSite").textContent = location.contato?.site || "Nao informado";
+  // 9. Site
+  document.getElementById("detailSite").textContent = location.contato?.site || "Não informado";
 
-  // Horário
-  document.getElementById("detailHorario").textContent = location.horario_funcionamento || "Nao informado";
+  // 10. Horário
+  document.getElementById("detailHorario").textContent = location.horario_funcionamento || "Não informado";
 
-  // Data de Criação
+  // 11. Data de Criação
   if (location.data_criacao) {
     var data = location.data_criacao.toDate ? location.data_criacao.toDate() : location.data_criacao;
     document.getElementById("detailDataCriacao").textContent = Utils.formatDate(data);
   } else {
-    document.getElementById("detailDataCriacao").textContent = "Nao informado";
+    document.getElementById("detailDataCriacao").textContent = "Não informado";
   }
 
-  // Galeria de Imagens
+  // 12. Galeria de Imagens
   if (location.imagens && location.imagens.length > 0) {
     setupGallery(location.imagens);
   } else {
     document.getElementById("galleryContainer").innerHTML = `
       <div class="no-images">
         <i class="fas fa-image"></i>
-        <p>Nenhuma imagem disponivel</p>
+        <p>Nenhuma imagem disponível</p>
       </div>
     `;
   }
 
-  // Mapa
+  // 13. Mapa
   setupDetailMap(location);
 }
 
@@ -207,7 +247,6 @@ function setupDetailMap(location) {
   var mapElement = document.getElementById("detailMap");
   if (!mapElement) return;
 
-  // Se já existir um mapa, destruí-lo para não duplicar
   if (detailMapInstance) {
     detailMapInstance.remove();
     detailMapInstance = null;
@@ -239,11 +278,9 @@ function setupDetailMap(location) {
     .openPopup();
 }
 
-// ===== FUNÇÃO QUE CRIA OS BOTÕES DE EDITAR E EXCLUIR =====
 function setupDetailEvents(location) {
   var editBtn = document.getElementById("editBtn");
   if (editBtn) {
-    // Remover eventos antigos para evitar duplicidade
     var newEditBtn = editBtn.cloneNode(true);
     editBtn.parentNode.replaceChild(newEditBtn, editBtn);
     
@@ -257,7 +294,6 @@ function setupDetailEvents(location) {
 
   var deleteBtn = document.getElementById("deleteBtn");
   if (deleteBtn) {
-    // Remover eventos antigos para evitar duplicidade
     var newDeleteBtn = deleteBtn.cloneNode(true);
     deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
     
@@ -286,7 +322,7 @@ function setupDetailEvents(location) {
   }
 }
 
-// Estilos para o estado de erro e sem imagens
+// Estilos para o estado de erro
 var style = document.createElement("style");
 style.textContent = `
   .error-state {
