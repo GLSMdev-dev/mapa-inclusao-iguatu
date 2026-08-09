@@ -21,40 +21,40 @@
     <link rel="stylesheet" href="css/style.css?v=20260703" />
   </head>
   <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-      <div class="nav-container">
-        <div class="nav-brand">
-          <div class="brand-mark">
-            <img src="logo.png" alt="PertenSer" onerror="this.style.display='none'" />
-          </div>
-          <div>
-            <span>Projeto PertenSer</span>
-            <small>Iguatu/CE</small>
-          </div>
-        </div>
-        <button class="nav-toggle" id="navToggle">
-          <i class="fas fa-bars"></i>
-        </button>
-        <ul class="nav-menu" id="navMenu">
-          <li>
-            <a href="index.html" class="active"
-              ><i class="fas fa-map"></i> Mapa</a
-            >
-          </li>
-          <li>
-            <button type="button" class="nav-link-btn" id="openRegisterModal">
-              <i class="fas fa-plus-circle"></i> Cadastrar
-            </button>
-          </li>
-          <li>
-            <a href="configuracao.html"
-              ><i class="fas fa-cog"></i> Configurações</a
-            >
-          </li>
-        </ul>
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-mark">
+        <img src="assets/logo.png" alt="PertenSer" onerror="this.style.display='none'" />
       </div>
-    </nav>
+      <div class="brand-text">
+        <span class="brand-name">Perten<span>Ser</span></span>
+        <small class="brand-sub">Vozes, Identidades e Futuros</small>
+      </div>
+    </a>
+    <button class="nav-toggle" id="navToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+    <ul class="nav-menu" id="navMenu">
+      <li>
+        <a href="index.html" class="active"
+          ><i class="fas fa-map"></i> Mapa</a
+        >
+      </li>
+      <li>
+        <button type="button" class="nav-link-btn" id="openRegisterModal">
+          <i class="fas fa-plus-circle"></i> Cadastrar
+        </button>
+      </li>
+      <li>
+        <a href="configuracao.html"
+          ><i class="fas fa-cog"></i> Configurações</a
+        >
+      </li>
+    </ul>
+  </div>
+</nav>
 
     <!-- Container Principal -->
     <div class="main-container">
@@ -168,16 +168,32 @@
             <label for="actionDescription">Descrição</label>
             <textarea id="actionDescription" name="actionDescription" rows="3"></textarea>
           </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="publicTarget">Público-alvo</label>
-              <input id="publicTarget" name="publicTarget" />
-            </div>
-            <div class="form-group">
-              <label for="professionals">Profissionais</label>
-              <input id="professionals" name="professionals" />
-            </div>
-          </div>
+         <div class="form-grid">
+    <div class="form-group">
+        <label for="publicTarget">Público-alvo</label>
+        <input id="publicTarget" name="publicTarget" />
+    </div>
+    <div class="form-group">
+        <label for="professionals">Profissionais</label>
+        <input id="professionals" name="professionals" />
+    </div>
+</div>
+
+<!-- NOVOS CAMPOS DE IDENTIFICAÇÃO -->
+<div class="form-grid">
+    <div class="form-group">
+        <label for="contactEmail">Email</label>
+        <input id="contactEmail" name="contactEmail" type="email" placeholder="contato@exemplo.com" />
+    </div>
+    <div class="form-group">
+        <label for="contactPhone">Telefone</label>
+        <input id="contactPhone" name="contactPhone" type="tel" placeholder="(88) 99999-9999" />
+    </div>
+</div>
+<div class="form-group">
+    <label for="responsible">Responsável</label>
+    <input id="responsible" name="responsible" placeholder="Nome da pessoa responsável" />
+</div>
           <div class="form-grid">
             <div class="form-group">
               <label for="address">Endereço</label>
@@ -244,96 +260,6 @@
     <script src="js/utils.js?v=20260703"></script>
     <script src="js/api.js?v=20260703"></script>
     <script src="js/mapa.js?v=20260703"></script>
-    <script>
-      if (!window.MapaApp && window.L) {
-        window.MapaApp = {
-          categories: [],
-          onMarkerClick: null,
-          onLocationClick: null,
-          map: null,
-          markersLayer: null,
-          setCategories(categories) {
-            this.categories = categories || [];
-          },
-          getCategoryColor(categoryId) {
-            const category = this.categories.find((c) => c.id === categoryId);
-            return category ? category.cor : "#3498db";
-          },
-          getCategoryIcon(categoryId) {
-            const category = this.categories.find((c) => c.id === categoryId);
-            return category ? category.icone : "📍";
-          },
-          init(mapElement, options = {}) {
-            const center = options.center || [-6.3616, -39.2925];
-            const zoom = options.zoom || 14;
-            this.map = L.map(mapElement, { center, zoom, zoomControl: true });
-            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-              attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            }).addTo(this.map);
-            this.markersLayer = L.layerGroup().addTo(this.map);
-            this.map.on("click", (event) => {
-              if (this.onLocationClick) {
-                this.onLocationClick({ lat: event.latlng.lat, lng: event.latlng.lng });
-              }
-            });
-            return this.map;
-          },
-          clearMarkers() {
-            if (this.markersLayer) {
-              this.markersLayer.clearLayers();
-            }
-          },
-          addMarkers(locations) {
-            this.clearMarkers();
-            if (!locations || !locations.length) return [];
-            return locations.map((location) => {
-              const lat = Number(location.latitude);
-              const lng = Number(location.longitude);
-              if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
-              const color = this.getCategoryColor(location.categoria);
-              const icon = this.getCategoryIcon(location.categoria);
-              const markerIcon = L.divIcon({
-                className: "map-marker",
-                html: `<div style="background-color:${color};width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;color:white;">${icon}</div>`,
-                iconSize: [30, 30],
-                iconAnchor: [15, 15],
-              });
-              const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(this.markersLayer);
-              marker.on("click", () => {
-                if (this.onMarkerClick) {
-                  this.onMarkerClick(location);
-                }
-              });
-              return marker;
-            }).filter(Boolean);
-          },
-          addSelectMarker(lat, lng) {
-            if (!this.map) return;
-            this.clearMarkers();
-            const markerIcon = L.divIcon({
-              className: "select-marker",
-              html: '<div style="background-color:#e74c3c;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;color:white;">📍</div>',
-              iconSize: [30, 30],
-              iconAnchor: [15, 15],
-            });
-            L.marker([lat, lng], { icon: markerIcon }).addTo(this.markersLayer);
-            this.map.setView([lat, lng], 16);
-          },
-          async getUserLocation() {
-            return new Promise((resolve, reject) => {
-              if (!navigator.geolocation) {
-                reject(new Error("Geolocalização não suportada"));
-                return;
-              }
-              navigator.geolocation.getCurrentPosition(
-                (position) => resolve({ lat: position.coords.latitude, lng: position.coords.longitude }),
-                (error) => reject(error),
-              );
-            });
-          },
-        };
-      }
-    </script>
     <script src="js/app.js?v=20260703"></script>
   </body>
 </html>
