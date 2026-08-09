@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PertenSer - Mapa da Inclusão Iguatu/CE</title>
+    <title>Mapa da Inclusão - Iguatu/CE</title>
 
     <!-- Leaflet CSS -->
     <link
@@ -18,7 +18,7 @@
     />
 
     <!-- Estilos Personalizados -->
-    <link rel="stylesheet" href="css/style.css?v=20260809" />
+    <link rel="stylesheet" href="css/style.css?v=20260703" />
   </head>
   <body>
     <!-- Navbar -->
@@ -56,23 +56,11 @@
       </div>
     </nav>
 
-    <!-- ===== BANNER HERO - PROJETO PERTENSER ===== -->
-    <section class="hero-banner">
-        <div class="hero-content">
-            <img src="assets/logo.png" alt="PertenSer" class="hero-logo" onerror="this.style.display='none'" />
-            <h1 class="hero-title">Perten<span>Ser</span></h1>
-            <p class="hero-subtitle">Vozes, Identidades e Futuros</p>
-            <div class="hero-tagline">
-                <span class="tag-yellow">🎙️ VOZES<br><small>A escuta que transforma</small></span>
-                <span class="tag-purple">👥 IDENTIDADES<br><small>Quem somos, nossa força</small></span>
-                <span class="tag-orange">🚀 FUTUROS<br><small>Ideias que hoje, mudanças amanhã</small></span>
-                <span class="tag-pink">🤝 JUNTOS<br><small>Construímos possibilidades</small></span>
-            </div>
-            <div class="hero-motto">
-                JUVENTUDE QUE PARTICIPA, TRANSFORMA E FAZ ACONTECER!
-            </div>
-        </div>
-    </section>
+    <!-- NOVO: BANNER -->
+    <div class="banner-container">
+      <!-- SUBSTITUA AQUI PELA SUA IMAGEM DE BANNER -->
+      <img src="assets/banner.jpg" alt="Banner Projeto PertenSer" />
+    </div>
 
     <!-- Container Principal -->
     <div class="main-container">
@@ -187,31 +175,31 @@
             <textarea id="actionDescription" name="actionDescription" rows="3"></textarea>
           </div>
          <div class="form-grid">
-    <div class="form-group">
-        <label for="publicTarget">Público-alvo</label>
-        <input id="publicTarget" name="publicTarget" />
-    </div>
-    <div class="form-group">
-        <label for="professionals">Profissionais</label>
-        <input id="professionals" name="professionals" />
-    </div>
-</div>
+            <div class="form-group">
+                <label for="publicTarget">Público-alvo</label>
+                <input id="publicTarget" name="publicTarget" />
+            </div>
+            <div class="form-group">
+                <label for="professionals">Profissionais</label>
+                <input id="professionals" name="professionals" />
+            </div>
+        </div>
 
-<!-- NOVOS CAMPOS DE IDENTIFICAÇÃO -->
-<div class="form-grid">
-    <div class="form-group">
-        <label for="contactEmail">Email</label>
-        <input id="contactEmail" name="contactEmail" type="email" placeholder="contato@exemplo.com" />
-    </div>
-    <div class="form-group">
-        <label for="contactPhone">Telefone</label>
-        <input id="contactPhone" name="contactPhone" type="tel" placeholder="(88) 99999-9999" />
-    </div>
-</div>
-<div class="form-group">
-    <label for="responsible">Responsável</label>
-    <input id="responsible" name="responsible" placeholder="Nome da pessoa responsável" />
-</div>
+        <!-- NOVOS CAMPOS DE IDENTIFICAÇÃO -->
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="contactEmail">Email</label>
+                <input id="contactEmail" name="contactEmail" type="email" placeholder="contato@exemplo.com" />
+            </div>
+            <div class="form-group">
+                <label for="contactPhone">Telefone</label>
+                <input id="contactPhone" name="contactPhone" type="tel" placeholder="(88) 99999-9999" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="responsible">Responsável</label>
+            <input id="responsible" name="responsible" placeholder="Nome da pessoa responsável" />
+        </div>
           <div class="form-grid">
             <div class="form-group">
               <label for="address">Endereço</label>
@@ -266,6 +254,14 @@
       </div>
     </div>
 
+    <!-- NOVO: RODAPÉ -->
+    <footer class="site-footer">
+        <div class="footer-img-container">
+            <!-- SUBSTITUA AQUI PELA SUA IMAGEM DE RODAPÉ -->
+            <img src="assets/rodape.jpg" alt="Rodapé com informações do projeto" />
+        </div>
+    </footer>
+
     <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -273,11 +269,11 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
-    <script src="js/config.js?v=20260809"></script>
-    <script src="js/logger.js?v=20260809"></script>
-    <script src="js/utils.js?v=20260809"></script>
-    <script src="js/api.js?v=20260809"></script>
-    <script src="js/mapa.js?v=20260809"></script>
-    <script src="js/app.js?v=20260809"></script>
+    <script src="js/config.js?v=20260703"></script>
+    <script src="js/logger.js?v=20260703"></script>
+    <script src="js/utils.js?v=20260703"></script>
+    <script src="js/api.js?v=20260703"></script>
+    <script src="js/mapa.js?v=20260703"></script>
+    <script src="js/app.js?v=20260703"></script>
   </body>
 </html>
