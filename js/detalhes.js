@@ -1,4 +1,5 @@
 let currentLocation = null;
+let detailMapInstance = null; // Guardar referência do mapa para não duplicar
 
 document.addEventListener("DOMContentLoaded", async function () {
   Logger.info("Iniciando pagina de detalhes...");
@@ -6,17 +7,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (!window.FIREBASE_CONFIG) {
       throw new Error("Firebase nao configurado");
     }
-    
+
     API.init(window.FIREBASE_CONFIG);
-    
+
     var categories = await API.createDefaultCategories();
     if (window.MapaApp) {
       MapaApp.setCategories(categories);
     }
-    
+
     var urlParams = Utils.getURLParams();
     var id = urlParams.id;
-    
+
     if (!id) {
       Utils.showNotification("ID da localizacao nao fornecido", "error");
       document.getElementById("loadingContainer").style.display = "none";
@@ -32,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       `;
       return;
     }
-    
+
     await loadDetails(id);
     Logger.info("Detalhes carregados com sucesso");
   } catch (error) {
@@ -56,13 +57,13 @@ async function loadDetails(id) {
   try {
     document.getElementById("loadingContainer").style.display = "flex";
     document.getElementById("detailsContentInner").style.display = "none";
-    
+
     currentLocation = await API.getById(id);
-    
+
     if (!currentLocation) {
       throw new Error("Localizacao nao encontrada");
     }
-    
+
     populateDetails(currentLocation);
     document.getElementById("loadingContainer").style.display = "none";
     document.getElementById("detailsContentInner").style.display = "block";
@@ -102,9 +103,12 @@ async function verificarSenha(acao) {
   });
 }
 
+// ===== FUNÇÃO QUE PREENCHE TÍTULO, DESCRIÇÃO, ETC =====
 function populateDetails(location) {
+  // Título
   document.getElementById("detailTitulo").textContent = location.titulo || "Sem titulo";
-  
+
+  // Categoria
   var category = null;
   if (window.MapaApp && window.MapaApp.categories) {
     for (var i = 0; i < window.MapaApp.categories.length; i++) {
@@ -114,27 +118,46 @@ function populateDetails(location) {
       }
     }
   }
-  
   var categoryName = category ? category.nome : location.categoria;
   var categoryColor = location.cor_pin || (category ? category.cor : "#3498db");
   var categoryIcon = category ? category.icone : "📍";
-  
   var badge = document.getElementById("detailCategoria");
   badge.textContent = categoryIcon + " " + categoryName;
   badge.style.backgroundColor = categoryColor;
-  
+
+  // Descrição
   document.getElementById("detailDescricao").textContent = location.descricao || "Sem descricao";
+
+  // Endereço
   document.getElementById("detailEndereco").textContent = location.endereco || "Nao informado";
-  document.getElementById("detailPublicoAlvo").textContent = location.publico_alvo || "Nao informado";
-  document.getElementById("detailProfissionais").textContent = location.profissionais || "Nao informado";
   
+  // Público-alvo
+  document.getElementById("detailPublicoAlvo").textContent = location.publico_alvo || "Nao informado";
+  
+  // Profissionais
+  document.getElementById("detailProfissionais").textContent = location.profissionais || "Nao informado";
+
+  // Telefone
+  document.getElementById("detailTelefone").textContent = location.contato?.telefone || "Nao informado";
+
+  // Email
+  document.getElementById("detailEmail").textContent = location.contato?.email || "Nao informado";
+
+  // Site
+  document.getElementById("detailSite").textContent = location.contato?.site || "Nao informado";
+
+  // Horário
+  document.getElementById("detailHorario").textContent = location.horario_funcionamento || "Nao informado";
+
+  // Data de Criação
   if (location.data_criacao) {
     var data = location.data_criacao.toDate ? location.data_criacao.toDate() : location.data_criacao;
     document.getElementById("detailDataCriacao").textContent = Utils.formatDate(data);
   } else {
     document.getElementById("detailDataCriacao").textContent = "Nao informado";
   }
-  
+
+  // Galeria de Imagens
   if (location.imagens && location.imagens.length > 0) {
     setupGallery(location.imagens);
   } else {
@@ -145,7 +168,8 @@ function populateDetails(location) {
       </div>
     `;
   }
-  
+
+  // Mapa
   setupDetailMap(location);
 }
 
@@ -153,11 +177,11 @@ function setupGallery(images) {
   var mainImage = document.getElementById("mainImage");
   var thumbnails = document.getElementById("galleryThumbnails");
   if (!mainImage || !thumbnails) return;
-  
+
   mainImage.src = images[0];
   mainImage.alt = "Imagem principal";
   thumbnails.innerHTML = "";
-  
+
   for (var i = 0; i < images.length; i++) {
     var url = images[i];
     var img = document.createElement("img");
@@ -165,7 +189,7 @@ function setupGallery(images) {
     img.alt = "Imagem " + (i + 1);
     img.className = i === 0 ? "active" : "";
     img.dataset.index = i;
-    
+
     img.addEventListener("click", function () {
       var clickedImg = this;
       mainImage.src = clickedImg.src;
@@ -182,55 +206,70 @@ function setupGallery(images) {
 function setupDetailMap(location) {
   var mapElement = document.getElementById("detailMap");
   if (!mapElement) return;
-  
-  var map = L.map(mapElement, {
+
+  // Se já existir um mapa, destruí-lo para não duplicar
+  if (detailMapInstance) {
+    detailMapInstance.remove();
+    detailMapInstance = null;
+  }
+
+  detailMapInstance = L.map(mapElement, {
     center: [location.latitude, location.longitude],
     zoom: 15,
     zoomControl: true
   });
-  
+
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
-  
+  }).addTo(detailMapInstance);
+
   var categoryColor = location.cor_pin || "#3498db";
   var categoryIcon = "📍";
-  
+
   var icon = L.divIcon({
     className: "detail-marker",
     html: '<div style="background-color:' + categoryColor + ';width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid white;box-shadow:0 2px 10px rgba(0,0,0,0.3);font-size:20px;color:white;">' + categoryIcon + "</div>",
     iconSize: [40, 40],
     iconAnchor: [20, 20]
   });
-  
+
   L.marker([location.latitude, location.longitude], { icon: icon })
-    .addTo(map)
+    .addTo(detailMapInstance)
     .bindPopup("<strong>" + Utils.sanitizeHTML(location.titulo) + "</strong>")
     .openPopup();
 }
 
+// ===== FUNÇÃO QUE CRIA OS BOTÕES DE EDITAR E EXCLUIR =====
 function setupDetailEvents(location) {
   var editBtn = document.getElementById("editBtn");
   if (editBtn) {
-    editBtn.addEventListener("click", async function () {
+    // Remover eventos antigos para evitar duplicidade
+    var newEditBtn = editBtn.cloneNode(true);
+    editBtn.parentNode.replaceChild(newEditBtn, editBtn);
+    
+    newEditBtn.addEventListener("click", async function () {
       var senhaOk = await verificarSenha("editar esta acao");
       if (senhaOk) {
         window.location.href = "cadastro.html?id=" + location.id;
       }
     });
   }
-  
+
   var deleteBtn = document.getElementById("deleteBtn");
   if (deleteBtn) {
-    deleteBtn.addEventListener("click", async function () {
+    // Remover eventos antigos para evitar duplicidade
+    var newDeleteBtn = deleteBtn.cloneNode(true);
+    deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
+    
+    newDeleteBtn.addEventListener("click", async function () {
       var senhaOk = await verificarSenha("excluir esta acao");
       if (!senhaOk) {
         return;
       }
       if (confirm('Tem certeza que deseja excluir "' + location.titulo + '"? Esta acao nao pode ser desfeita.')) {
         try {
-          deleteBtn.disabled = true;
-          deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
+          newDeleteBtn.disabled = true;
+          newDeleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
           await API.delete(location.id);
           Utils.showNotification("Localizacao excluida com sucesso!", "success");
           setTimeout(function () {
@@ -239,15 +278,15 @@ function setupDetailEvents(location) {
         } catch (error) {
           Logger.error("Erro ao excluir localizacao", error);
           Utils.showNotification("Erro ao excluir localizacao", "error");
-          deleteBtn.disabled = false;
-          deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Excluir';
+          newDeleteBtn.disabled = false;
+          newDeleteBtn.innerHTML = '<i class="fas fa-trash"></i> Excluir';
         }
       }
     });
   }
 }
 
-// Estilos para o estado de erro
+// Estilos para o estado de erro e sem imagens
 var style = document.createElement("style");
 style.textContent = `
   .error-state {
