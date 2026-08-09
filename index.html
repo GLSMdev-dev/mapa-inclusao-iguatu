@@ -64,7 +64,7 @@
     <!-- Container Principal -->
     <div class="main-container">
       
-      <!-- SIDEBAR (Agora oculta, aparece no hover) -->
+      <!-- SIDEBAR -->
       <aside class="sidebar" id="sidebar">
         <div class="filters-container">
           <div class="sidebar-actions">
@@ -92,19 +92,23 @@
             <label><i class="fas fa-tags"></i> Categoria</label>
             <select id="categoryFilter">
               <option value="all">Todas as categorias</option>
-              <!-- Categorias serão carregadas dinamicamente -->
             </select>
           </div>
 
-          <!-- Estatísticas -->
+          <!-- ESTATÍSTICAS EM DROPDOWN -->
           <div class="stats-container" id="statsContainer">
-            <h4><i class="fas fa-chart-bar"></i> Estatísticas</h4>
-            <div id="statsContent">
-               <!-- Gerado Dinamicamente -->
+            <button class="stats-header" id="statsToggle" aria-expanded="false">
+              <span><i class="fas fa-chart-bar"></i> Estatísticas</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="stats-content" id="statsContentWrapper">
+               <div id="statsContent">
+                  <!-- Gerado Dinamicamente -->
+               </div>
             </div>
           </div>
 
-          <!-- Lista de Localizações (Movida para cá) -->
+          <!-- Lista de Localizações (Vertical) -->
           <div class="locations-list" id="locationsList">
             <div class="list-header">
               <h3><i class="fas fa-list"></i> Localizações</h3>
@@ -123,7 +127,7 @@
       </main>
     </div>
 
-    <!-- MODAIS (Mantidos) -->
+    <!-- MODAIS -->
     <div class="modal-backdrop" id="registerModal">
       <div class="modal-card">
         <div class="modal-header">
