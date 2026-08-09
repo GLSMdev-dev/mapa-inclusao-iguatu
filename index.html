@@ -26,7 +26,6 @@
       <div class="nav-container">
         <a href="index.html" class="nav-brand">
           <div class="brand-mark">
-            <!-- ATUALIZADO: LOGO .jpeg -->
             <img src="assets/logo.jpeg" alt="PertenSer" onerror="this.style.display='none'" />
           </div>
           <div class="brand-text">
@@ -59,13 +58,13 @@
 
     <!-- BANNER -->
     <div class="banner-container">
-      <!-- ATUALIZADO: BANNER .png -->
       <img src="assets/banner.png" alt="Banner Projeto PertenSer" />
     </div>
 
     <!-- Container Principal -->
     <div class="main-container">
-      <!-- Sidebar de Filtros -->
+      
+      <!-- SIDEBAR (Agora oculta, aparece no hover) -->
       <aside class="sidebar" id="sidebar">
         <div class="filters-container">
           <div class="sidebar-actions">
@@ -93,11 +92,7 @@
             <label><i class="fas fa-tags"></i> Categoria</label>
             <select id="categoryFilter">
               <option value="all">Todas as categorias</option>
-              <option value="educacao">🎓 Educação</option>
-              <option value="saude">🏥 Saúde</option>
-              <option value="cultura">🎭 Cultura</option>
-              <option value="esporte">⚽ Esporte</option>
-              <option value="assistencia">🤝 Assistência Social</option>
+              <!-- Categorias serão carregadas dinamicamente -->
             </select>
           </div>
 
@@ -105,53 +100,30 @@
           <div class="stats-container" id="statsContainer">
             <h4><i class="fas fa-chart-bar"></i> Estatísticas</h4>
             <div id="statsContent">
-              <div class="stat-item">
-                <span class="stat-label">Total:</span>
-                <span class="stat-value" id="totalCount">0</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Educação:</span>
-                <span class="stat-value" id="educacaoCount">0</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Saúde:</span>
-                <span class="stat-value" id="saudeCount">0</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Cultura:</span>
-                <span class="stat-value" id="culturaCount">0</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Esporte:</span>
-                <span class="stat-value" id="esporteCount">0</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Assistência:</span>
-                <span class="stat-value" id="assistenciaCount">0</span>
-              </div>
+               <!-- Gerado Dinamicamente -->
+            </div>
+          </div>
+
+          <!-- Lista de Localizações (Movida para cá) -->
+          <div class="locations-list" id="locationsList">
+            <div class="list-header">
+              <h3><i class="fas fa-list"></i> Localizações</h3>
+              <span id="listCount">0 encontrados</span>
+            </div>
+            <div id="locationsContainer" class="locations-grid">
+              <!-- Cards gerados dinamicamente -->
             </div>
           </div>
         </div>
       </aside>
 
-      <!-- Conteúdo Principal -->
+      <!-- Conteúdo Principal (Apenas o Mapa) -->
       <main class="content">
-        <!-- Mapa -->
         <div id="map" class="map-container"></div>
-
-        <!-- Lista de Localizações -->
-        <div class="locations-list" id="locationsList">
-          <div class="list-header">
-            <h3><i class="fas fa-list"></i> Localizações</h3>
-            <span id="listCount">0 encontrados</span>
-          </div>
-          <div id="locationsContainer" class="locations-grid">
-            <!-- Cards serão gerados dinamicamente -->
-          </div>
-        </div>
       </main>
     </div>
 
+    <!-- MODAIS (Mantidos) -->
     <div class="modal-backdrop" id="registerModal">
       <div class="modal-card">
         <div class="modal-header">
@@ -185,8 +157,6 @@
                 <input id="professionals" name="professionals" />
             </div>
         </div>
-
-        <!-- NOVOS CAMPOS DE IDENTIFICAÇÃO -->
         <div class="form-grid">
             <div class="form-group">
                 <label for="contactEmail">Email</label>
@@ -258,7 +228,6 @@
     <!-- RODAPÉ -->
     <footer class="site-footer">
         <div class="footer-img-container">
-            <!-- ATUALIZADO: RODAPÉ .png -->
             <img src="assets/rodape.png" alt="Rodapé com informações do projeto" />
         </div>
     </footer>
