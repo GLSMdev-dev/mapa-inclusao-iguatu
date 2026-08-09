@@ -69,12 +69,10 @@
           
           <!-- Cabeçalho com Botões -->
           <div class="details-header">
-            <!-- MELHORIA: history.back() para não recarregar a página -->
             <button onclick="history.back()" class="btn btn-secondary">
               <i class="fas fa-arrow-left"></i> Voltar
             </button>
             <div class="details-actions">
-              <!-- IDs dos botões (O JavaScript vai procurar por eles) -->
               <button id="editBtn" class="btn btn-primary">
                 <i class="fas fa-edit"></i> Editar
               </button>
@@ -86,111 +84,88 @@
 
           <!-- Título e Categoria -->
           <div class="details-title-section">
-            <!-- ID do Título -->
             <h1 id="detailTitulo"></h1>
-            <!-- ID da Categoria -->
             <span class="category-badge" id="detailCategoria"></span>
           </div>
 
           <!-- Galeria de Imagens -->
           <div class="gallery-container" id="galleryContainer">
             <div class="gallery-main" id="galleryMain">
-              <!-- ID da Imagem Principal -->
               <img id="mainImage" src="" alt="Imagem principal" />
             </div>
             <div class="gallery-thumbnails" id="galleryThumbnails">
-              <!-- Thumbnails serão gerados dinamicamente -->
             </div>
           </div>
 
           <!-- Informações Detalhadas -->
           <div class="details-info-grid">
-            
             <div class="info-item">
               <i class="fas fa-map-pin"></i>
               <div>
                 <label>Endereço</label>
-                <!-- ID do Endereço -->
                 <p id="detailEndereco"></p>
               </div>
             </div>
-            
             <div class="info-item">
               <i class="fas fa-clock"></i>
               <div>
                 <label>Horário de Funcionamento</label>
-                <!-- ID do Horário -->
                 <p id="detailHorario"></p>
               </div>
             </div>
-            
             <div class="info-item">
               <i class="fas fa-users"></i>
               <div>
                 <label>Público-alvo</label>
-                <!-- ID do Público-alvo -->
                 <p id="detailPublicoAlvo"></p>
               </div>
             </div>
-            
             <div class="info-item">
               <i class="fas fa-user-md"></i>
               <div>
                 <label>Profissionais</label>
-                <!-- ID dos Profissionais -->
                 <p id="detailProfissionais"></p>
               </div>
             </div>
-            
             <div class="info-item">
               <i class="fas fa-phone"></i>
               <div>
                 <label>Telefone</label>
-                <!-- ID do Telefone -->
                 <p id="detailTelefone"></p>
               </div>
             </div>
-            
             <div class="info-item">
               <i class="fas fa-envelope"></i>
               <div>
                 <label>Email</label>
-                <!-- ID do Email -->
                 <p id="detailEmail"></p>
               </div>
             </div>
-            
             <div class="info-item">
               <i class="fas fa-globe"></i>
               <div>
                 <label>Site</label>
-                <!-- ID do Site -->
                 <p id="detailSite"></p>
               </div>
             </div>
-            
             <div class="info-item">
               <i class="fas fa-calendar"></i>
               <div>
                 <label>Data de Criação</label>
-                <!-- ID da Data de Criação -->
                 <p id="detailDataCriacao"></p>
               </div>
             </div>
-
           </div>
 
           <!-- Descrição -->
           <div class="details-description">
             <h3><i class="fas fa-align-left"></i> Descrição</h3>
-            <!-- ID da Descrição -->
             <p id="detailDescricao"></p>
           </div>
 
           <!-- Mapa -->
           <div class="details-map">
             <h3><i class="fas fa-map"></i> Localização</h3>
-            <!-- ID do Mapa -->
             <div id="detailMap" class="detail-map-container"></div>
           </div>
 
