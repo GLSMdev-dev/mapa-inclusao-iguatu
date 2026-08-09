@@ -93,7 +93,8 @@ async function loadDetails(id) {
 
 async function verificarSenha(acao) {
   return new Promise(function (resolve) {
-    var senhaCorreta = window.APP_CONFIG?.adminPassword || "pertencer2024";
+    // CORREÇÃO: Usa a senha definida no config.js
+    var senhaCorreta = window.APP_CONFIG?.adminPassword || "PertenSer26";
     var senhaDigitada = prompt("🔒 Para " + acao + ", digite a senha de administrador:", "");
     if (senhaDigitada === null) {
       Utils.showNotification("Operacao cancelada pelo usuario.", "info");
@@ -111,7 +112,6 @@ async function verificarSenha(acao) {
 
 function populateDetails(location) {
   // --- DIAGNÓSTICO DE ELEMENTOS ---
-  // Esta função verifica se os IDs no HTML existem. Se algum sumir, ele vai aparecer no console e na tela.
   const requiredElements = [
     "detailTitulo", "detailCategoria", "detailDescricao", "detailEndereco",
     "detailPublicoAlvo", "detailProfissionais", "detailTelefone", "detailEmail",
@@ -141,9 +141,8 @@ function populateDetails(location) {
         </button>
       </div>
     `;
-    return; // Para a execução aqui
+    return;
   }
-  // --- FIM DO DIAGNÓSTICO ---
 
   // 1. Título
   document.getElementById("detailTitulo").textContent = location.titulo || "Sem título";
@@ -252,6 +251,7 @@ function setupDetailMap(location) {
     detailMapInstance = null;
   }
 
+  // CORREÇÃO DO MAPA: Inicializa exatamente nas coordenadas da localização
   detailMapInstance = L.map(mapElement, {
     center: [location.latitude, location.longitude],
     zoom: 15,
