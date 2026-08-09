@@ -69,10 +69,8 @@
           
           <!-- Cabeçalho com Botões -->
           <div class="details-header">
-            <button
-              onclick="window.location.href = 'index.html'"
-              class="btn btn-secondary"
-            >
+            <!-- MELHORIA: history.back() para não recarregar a página -->
+            <button onclick="history.back()" class="btn btn-secondary">
               <i class="fas fa-arrow-left"></i> Voltar
             </button>
             <div class="details-actions">
