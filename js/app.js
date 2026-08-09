@@ -576,22 +576,51 @@ function updateLocationsList(locations) {
   container.innerHTML = html;
 }
 
-// ===== ESTATÍSTICAS =====
+// ===== ESTATÍSTICAS DINÂMICAS =====
 async function updateStats() {
   try {
     const stats = await API.getStats();
-    const elements = {
-      totalCount: stats.total,
-    };
-
-    for (const [id, value] of Object.entries(elements)) {
-      const element = document.getElementById(id);
-      if (element) {
-        element.textContent = value;
-      }
+    
+    // Atualizar total
+    const totalElement = document.getElementById("totalCount");
+    if (totalElement) {
+      totalElement.textContent = stats.total;
     }
 
-    Logger.info("Estatísticas atualizadas", stats);
+    // Limpar estatísticas anteriores (mantendo o container)
+    const statsContent = document.getElementById("statsContent");
+    if (!statsContent) return;
+    
+    // Limpar apenas os itens, mantendo o título se houver
+    statsContent.innerHTML = '';
+
+    // Verificar se há categorias
+    if (Object.keys(stats.categories).length === 0) {
+        statsContent.innerHTML = '<div class="stat-item"><span>Nenhuma categoria encontrada</span></div>';
+        return;
+    }
+
+    // Gerar HTML para cada categoria dinamicamente
+    let html = '';
+    for (const [id, catData] of Object.entries(stats.categories)) {
+        const icon = catData.icone || '📌';
+        const cor = catData.cor || '#3498db';
+        const nome = catData.nome || id;
+        const total = catData.total || 0;
+
+        html += `
+            <div class="stat-item">
+                <span style="display:flex; align-items:center; gap:4px;">
+                    <span style="color:${cor}">${icon}</span> ${nome}:
+                </span>
+                <span class="stat-value">${total}</span>
+            </div>
+        `;
+    }
+    
+    statsContent.innerHTML = html;
+    
+    Logger.info("Estatísticas atualizadas dinamicamente", stats);
   } catch (error) {
     Logger.error("Erro ao atualizar estatísticas", error);
   }
