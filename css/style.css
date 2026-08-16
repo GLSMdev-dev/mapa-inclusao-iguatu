@@ -103,12 +103,6 @@ body {
   flex-direction: column;
 }
 
-/* Páginas de conteúdo (Detalhes, Cadastro, Config) - Barra de rolagem liberada */
-body.scrollable-page {
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
 /* ===== NAVBAR ===== */
 .navbar {
   background: var(--primary-gradient);
@@ -116,7 +110,7 @@ body.scrollable-page {
   padding: var(--spacing-sm) 0;
   position: sticky;
   top: 0;
-  z-index: 150; /* Fica acima da seta da sidebar */
+  z-index: 150;
   box-shadow: var(--shadow-md);
   border-bottom: 3px solid var(--gold);
   flex-shrink: 0;
@@ -181,13 +175,18 @@ body.scrollable-page {
 }
 
 .nav-toggle {
-  display: none;
   background: none;
   border: none;
   color: white;
   font-size: var(--font-size-2xl);
   cursor: pointer;
   padding: var(--spacing-sm);
+  display: block; /* Sempre visível */
+  transition: transform 0.3s ease;
+}
+
+.nav-toggle:hover {
+  transform: scale(1.1);
 }
 
 .nav-menu {
@@ -232,7 +231,7 @@ body.scrollable-page {
   color: var(--primary-dark);
 }
 
-/* ===== BANNER (Agora com rolagem) ===== */
+/* ===== BANNER ===== */
 .banner-container {
   width: 100%;
   background-color: #fff;
@@ -256,50 +255,12 @@ body.scrollable-page {
 .main-container {
   display: flex;
   flex: 1;
-  min-height: 50vh; /* Garante que o mapa tenha um tamanho mínimo */
-  overflow: hidden;
+  min-height: 50vh;
+  overflow: hidden; /* O mapa terá rolagem interna */
   position: relative;
 }
 
-/* ZONA DE HOVER (Camada invisível na lateral para ativar o hover) */
-.sidebar-hover-zone {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 30px;
-  z-index: 250;
-  cursor: pointer;
-}
-
-/* ===== BOTÃO TRIGGER DA SIDEBAR (SETA) ===== */
-#sidebar-trigger {
-  position: fixed;
-  left: 0;
-  top: 80px; /* Posicionado logo abaixo da Navbar */
-  transform: translateY(0);
-  width: 28px;
-  height: 50px;
-  background: var(--primary-gradient);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0 8px 8px 0;
-  font-size: 14px;
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-  z-index: 5000;
-  transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s;
-  border: none;
-  outline: none;
-}
-
-#sidebar-trigger i {
-  transition: transform 0.4s ease;
-}
-
-/* ===== SIDEBAR ===== */
+/* ===== SIDEBAR (Menu Sanduíche) ===== */
 .sidebar {
   position: absolute;
   left: 0;
@@ -333,29 +294,9 @@ body.scrollable-page {
   background: var(--gray-400);
 }
 
-/* Estados Aberto/Fechado */
+/* Estado Aberto/Fechado */
 .sidebar.open {
   transform: translateX(0);
-}
-#sidebar-trigger.open {
-  left: 480px;
-}
-#sidebar-trigger.open i {
-  transform: rotate(180deg);
-}
-
-/* Ativação por hover */
-.main-container:hover .sidebar-hover-zone + .sidebar,
-.sidebar:hover {
-  transform: translateX(0);
-}
-.main-container:hover #sidebar-trigger,
-.sidebar:hover ~ #sidebar-trigger {
-  left: 480px;
-}
-.main-container:hover #sidebar-trigger i,
-.sidebar:hover ~ #sidebar-trigger i {
-  transform: rotate(180deg);
 }
 
 .sidebar h3 {
@@ -657,6 +598,7 @@ body.scrollable-page {
   background-color: var(--gray-300);
   width: 100%;
   height: 100%;
+  overflow: hidden; /* Barra de rolagem interna do mapa */
 }
 
 #map {
@@ -664,7 +606,7 @@ body.scrollable-page {
   height: 100%;
 }
 
-/* ===== BOTÕES PADRONIZADOS (NOVO ESTILO) ===== */
+/* ===== BOTÕES PADRONIZADOS ===== */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -1440,14 +1382,11 @@ body.modal-open {
 /* ===== RESPONSIVIDADE ===== */
 @media (max-width: 1024px) {
   .sidebar { width: 400px; }
-  #sidebar-trigger.open { left: 400px; }
-  .main-container:hover #sidebar-trigger { left: 400px; }
   .editor-body { grid-template-columns: 1fr; }
   .details-info-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
-  .nav-toggle { display: block; }
   .nav-menu {
     display: none;
     flex-direction: column;
@@ -1458,35 +1397,37 @@ body.modal-open {
     background: var(--primary-gradient);
     padding: var(--spacing-md);
     box-shadow: var(--shadow-lg);
+    z-index: 200;
   }
   .nav-menu.active { display: flex; }
   
   .main-container {
     flex-direction: column;
-    height: 50vh; /* Mapa ocupa 50% da altura da tela no mobile */
+    height: 50vh;
+    overflow-y: auto; /* Permite rolar o mapa no mobile */
   }
 
   .sidebar {
-    position: relative;
-    transform: translateX(0);
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
-    max-height: 40vh;
-    overflow-y: auto;
-    box-shadow: none;
-    border-bottom: 1px solid var(--gray-200);
-    padding: var(--spacing-md);
+    height: 100vh;
+    max-height: 100vh;
+    transform: translateX(-100%);
     backdrop-filter: none;
     background: white;
     z-index: 300;
+    padding: var(--spacing-lg);
+    border-right: none;
   }
   
-  #sidebar-trigger, .sidebar-hover-zone {
-    display: none;
+  .sidebar.open {
+    transform: translateX(0);
   }
   
-  .sidebar.open { transform: translateX(0); }
   .locations-grid { grid-template-columns: 1fr; }
-  .content { height: 100%; }
+  .content { height: 100%; min-height: 400px; }
   
   .banner-container img { max-height: 80px; }
   .footer-img-container img { max-height: 60px; }
