@@ -48,16 +48,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // ===== EVENTOS =====
 function setupEvents() {
-  const navToggle = document.getElementById("navToggle");
-  const navMenu = document.getElementById("navMenu");
+  const hamburgerTrigger = document.getElementById("hamburger-trigger");
   const sidebar = document.getElementById("sidebar");
 
-  // --- NOVA LÓGICA DO MENU SANDUÍCHE ---
-  if (navToggle && sidebar) {
-    navToggle.addEventListener("click", () => {
+  // --- NOVA LÓGICA DO BOTÃO SANDUÍCHE FLUTUANTE ---
+  if (hamburgerTrigger && sidebar) {
+    hamburgerTrigger.addEventListener("click", () => {
       sidebar.classList.toggle("open");
-      // Opcional: mudar o ícone do botão (X ou Hambúrguer)
-      const icon = navToggle.querySelector("i");
+      // Mudar o ícone do botão (X ou Hambúrguer)
+      const icon = hamburgerTrigger.querySelector("i");
       if (sidebar.classList.contains("open")) {
         icon.className = "fas fa-times";
       } else {
@@ -67,13 +66,11 @@ function setupEvents() {
   }
 
   // Lógica do menu mobile antigo (para os links da navbar)
+  const navToggle = document.getElementById("navToggle");
+  const navMenu = document.getElementById("navMenu");
   if (navToggle && navMenu) {
-    // Nota: O navToggle agora é usado principalmente para a sidebar.
-    // Mantenho o código original apenas para compatibilidade, mas a sidebar é a principal.
     navToggle.addEventListener("click", () => {
-      // Se estiver no mobile, o menu da navbar pode ser aberto também.
-      // Sugiro remover essa linha se quiser apenas a sidebar.
-      // navMenu.classList.toggle("active"); 
+      navMenu.classList.toggle("active");
     });
   }
 
@@ -230,6 +227,25 @@ function setupEvents() {
             content.classList.toggle("open");
         }
     });
+  }
+
+  // ===== CORREÇÃO DO REDIMENSIONAMENTO DO MAPA =====
+  // Ajusta o mapa quando a janela é redimensionada ou a sidebar abre/fecha
+  window.addEventListener("resize", () => {
+    if (MapaApp.map) {
+      setTimeout(() => MapaApp.map.invalidateSize(), 100);
+    }
+  });
+
+  // Observa mudanças no tamanho do container do mapa
+  const mapContainer = document.querySelector(".map-container");
+  if (mapContainer && window.ResizeObserver) {
+    const resizeObserver = new ResizeObserver(() => {
+      if (MapaApp.map) {
+        MapaApp.map.invalidateSize();
+      }
+    });
+    resizeObserver.observe(mapContainer);
   }
 }
 
@@ -529,149 +545,4 @@ async function handleSubmit(event) {
 
 // ===== CARREGAR DADOS =====
 async function loadData(category = null, search = null) {
-  Logger.info("Carregando dados...");
-
-  try {
-    showLoading(true);
-
-    const filters = {};
-    if (category && category !== "all") {
-      filters.categoria = category;
-    }
-
-    let locations;
-    if (search && search.trim()) {
-      locations = await API.search(search.trim(), filters);
-    } else {
-      locations = await API.getAll(filters);
-    }
-
-    MapaApp.addMarkers(locations, { fitBounds: true });
-    updateLocationsList(locations);
-    await updateStats();
-
-    Logger.info(`${locations.length} localizações carregadas`);
-  } catch (error) {
-    Logger.error("Erro ao carregar dados", error);
-    Utils.showNotification("Erro ao carregar localizações", "error");
-  } finally {
-    showLoading(false);
-  }
-}
-
-// ===== LISTA DE LOCALIZAÇÕES =====
-function updateLocationsList(locations) {
-  const container = document.getElementById("locationsContainer");
-  const countSpan = document.getElementById("listCount");
-
-  if (!container) return;
-
-  if (countSpan) {
-    countSpan.textContent = `${locations.length} encontrados`;
-  }
-
-  if (locations.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state" style="text-align:center; padding:20px; color:var(--gray-500);">
-        <i class="fas fa-map-marker-alt" style="font-size:24px; margin-bottom:10px; display:block;"></i>
-        <p>Nenhuma ação inclusiva cadastrada ainda.</p>
-      </div>
-    `;
-    return;
-  }
-
-  let html = "";
-  locations.forEach((location) => {
-    const category = MapaApp.categories.find((c) => c.id === location.categoria);
-    const categoryName = category ? category.nome : location.categoria;
-    const categoryColor = location.cor_pin || (category ? category.cor : "#3498db");
-    const imageUrl = location.imagens && location.imagens.length > 0 ? location.imagens[0] : "assets/placeholder.jpg";
-
-    html += `
-      <div class="location-card" onclick="window.location.href='detalhes.html?id=${location.id}'">
-        <div class="location-card-image">
-          <img src="${imageUrl}" alt="${Utils.sanitizeHTML(location.titulo)}" loading="lazy">
-        </div>
-        <div class="location-card-content">
-          <h4>${Utils.sanitizeHTML(location.titulo)}</h4>
-          <span class="category-badge" style="background-color: ${categoryColor}">
-            ${category ? category.icone : ""} ${categoryName}
-          </span>
-          <p>${Utils.sanitizeHTML(Utils.truncateText(location.descricao, 80))}</p>
-          <div class="card-footer">
-            <span class="address"><i class="fas fa-map-pin"></i> ${Utils.sanitizeHTML(location.endereco)}</span>
-            <span class="views"><i class="fas fa-eye"></i> ${location.visualizacoes || 0}</span>
-          </div>
-        </div>
-      </div>
-    `;
-  });
-
-  container.innerHTML = html;
-}
-
-// ===== ESTATÍSTICAS DINÂMICAS =====
-async function updateStats() {
-  try {
-    const stats = await API.getStats();
-    
-    // Atualizar total
-    const totalElement = document.getElementById("totalCount");
-    if (totalElement) {
-      totalElement.textContent = stats.total;
-    }
-
-    const statsContent = document.getElementById("statsContent");
-    if (!statsContent) return;
-    
-    statsContent.innerHTML = '';
-
-    if (Object.keys(stats.categories).length === 0) {
-        statsContent.innerHTML = '<div class="stat-item"><span>Nenhuma categoria encontrada</span></div>';
-        return;
-    }
-
-    let html = '';
-    for (const [id, catData] of Object.entries(stats.categories)) {
-        const icon = catData.icone || '📌';
-        const cor = catData.cor || '#3498db';
-        const nome = catData.nome || id;
-        const total = catData.total || 0;
-
-        html += `
-            <div class="stat-item">
-                <span style="display:flex; align-items:center; gap:4px;">
-                    <span style="color:${cor}">${icon}</span> ${nome}:
-                </span>
-                <span class="stat-value">${total}</span>
-            </div>
-        `;
-    }
-    
-    statsContent.innerHTML = html;
-    
-    Logger.info("Estatísticas atualizadas dinamicamente", stats);
-  } catch (error) {
-    Logger.error("Erro ao atualizar estatísticas", error);
-  }
-}
-
-// ===== LOADING =====
-function showLoading(show) {
-  const container = document.getElementById("locationsContainer");
-  if (!container) return;
-
-  if (show) {
-    container.innerHTML = `
-      <div class="loading-container" style="text-align:center; padding:40px;">
-        <div class="spinner" style="margin: 0 auto 10px;"></div>
-        <p style="color: var(--gray-500);">Carregando ações inclusivas...</p>
-      </div>
-    `;
-  }
-}
-
-window.loadData = loadData;
-window.updateStats = updateStats;
-window.closeDetailsModal = closeDetailsModal;
-window.updatePinColorSelection = updatePinColorSelection;
+  Logger.info("Carregando dados
