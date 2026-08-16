@@ -50,10 +50,30 @@ document.addEventListener("DOMContentLoaded", async () => {
 function setupEvents() {
   const navToggle = document.getElementById("navToggle");
   const navMenu = document.getElementById("navMenu");
+  const sidebar = document.getElementById("sidebar");
 
-  if (navToggle && navMenu) {
+  // --- NOVA LÓGICA DO MENU SANDUÍCHE ---
+  if (navToggle && sidebar) {
     navToggle.addEventListener("click", () => {
-      navMenu.classList.toggle("active");
+      sidebar.classList.toggle("open");
+      // Opcional: mudar o ícone do botão (X ou Hambúrguer)
+      const icon = navToggle.querySelector("i");
+      if (sidebar.classList.contains("open")) {
+        icon.className = "fas fa-times";
+      } else {
+        icon.className = "fas fa-bars";
+      }
+    });
+  }
+
+  // Lógica do menu mobile antigo (para os links da navbar)
+  if (navToggle && navMenu) {
+    // Nota: O navToggle agora é usado principalmente para a sidebar.
+    // Mantenho o código original apenas para compatibilidade, mas a sidebar é a principal.
+    navToggle.addEventListener("click", () => {
+      // Se estiver no mobile, o menu da navbar pode ser aberto também.
+      // Sugiro remover essa linha se quiser apenas a sidebar.
+      // navMenu.classList.toggle("active"); 
     });
   }
 
@@ -210,35 +230,6 @@ function setupEvents() {
             content.classList.toggle("open");
         }
     });
-  }
-
-  // ===== SIDEBAR: CLIQUE E HOVER =====
-  const sidebarTrigger = document.getElementById("sidebar-trigger");
-  const sidebar = document.getElementById("sidebar");
-
-  if (sidebarTrigger && sidebar) {
-      // 1. Funcionalidade de Clique na Seta
-      sidebarTrigger.addEventListener("click", (e) => {
-          e.stopPropagation(); // Evita conflitos
-          const isOpen = sidebar.classList.contains("open");
-          if (isOpen) {
-              sidebar.classList.remove("open");
-              sidebarTrigger.classList.remove("open");
-          } else {
-              sidebar.classList.add("open");
-              sidebarTrigger.classList.add("open");
-          }
-      });
-
-      // 2. Funcionalidade de Fechar ao clicar fora
-      document.addEventListener("click", (e) => {
-          if (sidebar.classList.contains("open") && 
-              !sidebar.contains(e.target) && 
-              !sidebarTrigger.contains(e.target)) {
-              sidebar.classList.remove("open");
-              sidebarTrigger.classList.remove("open");
-          }
-      });
   }
 }
 
