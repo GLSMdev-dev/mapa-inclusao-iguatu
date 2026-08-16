@@ -64,6 +64,13 @@ class MapaAppClass {
       }
     });
 
+    // Forçar redimensionamento após inicialização
+    setTimeout(() => {
+      if (this.map) {
+        this.map.invalidateSize();
+      }
+    }, 200);
+
     return this.map;
   }
 
