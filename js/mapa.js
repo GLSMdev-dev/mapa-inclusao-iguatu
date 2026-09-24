@@ -64,13 +64,6 @@ class MapaAppClass {
       }
     });
 
-    // Forçar redimensionamento após inicialização
-    setTimeout(() => {
-      if (this.map) {
-        this.map.invalidateSize();
-      }
-    }, 200);
-
     return this.map;
   }
 
@@ -132,17 +125,30 @@ class MapaAppClass {
       });
 
       const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(this.markersLayer);
-const firstImage = location.imagens && location.imagens.length ? location.imagens[0] : "";
-const descricaoTruncada = Utils.truncateText(location.descricao || "", 80);
-const tooltipContent = `
-  <div style="max-width: 200px; word-wrap: break-word;">
-    <strong style="display: block; margin-bottom: 4px;">${Utils.sanitizeHTML(location.titulo || "Localização")}</strong>
-    <p style="margin: 4px 0 6px; color: #4b5563; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">${Utils.sanitizeHTML(descricaoTruncada)}</p>
-    ${firstImage ? `<img src="${firstImage}" alt="Foto" style="width: 100%; height: 80px; object-fit: cover; border-radius: 8px;">` : ""}
-  </div>
-`;
-      marker.bindTooltip(tooltipContent, { sticky: true, direction: "top" });
-      marker.bindPopup(`<strong>${Utils.sanitizeHTML(location.titulo || "Localização")}</strong>`);
+
+      const firstImage = location.imagens && location.imagens.length ? location.imagens[0] : "";
+      const titulo = Utils.sanitizeHTML(location.titulo || "Localização");
+      const descricaoOriginal = location.descricao || "";
+      const descricaoTruncada = Utils.truncateText(descricaoOriginal, 70);
+      const descricao = Utils.sanitizeHTML(descricaoTruncada);
+
+      const tooltipContent = `
+        <div class="tooltip-custom">
+          <strong class="tooltip-title">${titulo}</strong>
+          <p class="tooltip-desc">${descricao}</p>
+          ${firstImage ? `<img src="${firstImage}" alt="Foto" class="tooltip-img">` : ""}
+        </div>
+      `;
+
+      marker.bindTooltip(tooltipContent, {
+        sticky: true,
+        direction: "top",
+        className: "tooltip-pertense",
+        opacity: 1,
+        maxWidth: 220
+      });
+
+      marker.bindPopup(`<strong>${titulo}</strong>`);
 
       marker.on("click", () => {
         if (this.onMarkerClick) {
