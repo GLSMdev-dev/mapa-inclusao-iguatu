@@ -132,14 +132,15 @@ class MapaAppClass {
       });
 
       const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(this.markersLayer);
-      const firstImage = location.imagens && location.imagens.length ? location.imagens[0] : "";
-      const tooltipContent = `
-        <div style="max-width: 180px;">
-          <strong>${Utils.sanitizeHTML(location.titulo || "Localização")}</strong>
-          <p style="margin: 4px 0 6px; color: #4b5563;">${Utils.sanitizeHTML(location.descricao || "")}</p>
-          ${firstImage ? `<img src="${firstImage}" alt="Foto" style="width: 100%; height: 90px; object-fit: cover; border-radius: 8px;">` : ""}
-        </div>
-      `;
+const firstImage = location.imagens && location.imagens.length ? location.imagens[0] : "";
+const descricaoTruncada = Utils.truncateText(location.descricao || "", 80);
+const tooltipContent = `
+  <div style="max-width: 200px; word-wrap: break-word;">
+    <strong style="display: block; margin-bottom: 4px;">${Utils.sanitizeHTML(location.titulo || "Localização")}</strong>
+    <p style="margin: 4px 0 6px; color: #4b5563; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">${Utils.sanitizeHTML(descricaoTruncada)}</p>
+    ${firstImage ? `<img src="${firstImage}" alt="Foto" style="width: 100%; height: 80px; object-fit: cover; border-radius: 8px;">` : ""}
+  </div>
+`;
       marker.bindTooltip(tooltipContent, { sticky: true, direction: "top" });
       marker.bindPopup(`<strong>${Utils.sanitizeHTML(location.titulo || "Localização")}</strong>`);
 
