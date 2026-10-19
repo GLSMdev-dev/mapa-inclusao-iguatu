@@ -102,6 +102,12 @@ body {
   min-height: 100vh;
 }
 
+/* ===== PÁGINAS COM SCROLL ===== */
+body.scrollable-page {
+  overflow-y: auto;
+  height: auto;
+}
+
 /* ===== NAVBAR ===== */
 .navbar {
   background-color: var(--primary);
@@ -166,17 +172,20 @@ body {
   font-weight: 800;
   letter-spacing: 0.5px;
   color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .brand-text .brand-name span {
   color: var(--gold);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .brand-text .brand-sub {
   font-size: var(--font-size-xs);
   font-weight: 300;
-  opacity: 0.85;
+  opacity: 0.9;
   letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .nav-toggle {
@@ -230,19 +239,16 @@ body {
   color: var(--primary);
 }
 
-/* ===== HERO BANNER - APENAS IMAGEM ===== */
-.hero-banner {
+/* ===== BANNER (igual à página de detalhes) ===== */
+.banner-container {
   width: 100%;
+  overflow: hidden;
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  border-bottom: 4px solid var(--gold);
-  background-color: #0d2b45;
-  display: block;
   line-height: 0;
 }
 
-.hero-banner-img {
+.banner-container img {
   width: 100%;
   height: auto;
   display: block;
@@ -1499,10 +1505,6 @@ body.modal-open {
     width: 55px !important;
     height: 55px !important;
   }
-
-  .hero-banner {
-    border-bottom: 3px solid var(--gold);
-  }
 }
 
 /* Mobile */
@@ -1538,10 +1540,6 @@ body.modal-open {
 
   .gallery-thumbnails img {
     height: 60px;
-  }
-
-  .hero-banner {
-    border-bottom: 2px solid var(--gold);
   }
 }
 
