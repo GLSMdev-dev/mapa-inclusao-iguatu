@@ -3,12 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mapa da Inclusão - Iguatu/CE</title>
+    <title>PertenSer - Mapa da Inclusão Iguatu/CE</title>
 
     <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link rel="stylesheet" href="css/style.css?v=20260703" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- Estilos Personalizados -->
+    <link rel="stylesheet" href="css/style.css?v=20261019" />
   </head>
   <body>
     <!-- Navbar -->
@@ -16,7 +26,7 @@
       <div class="nav-container">
         <a href="index.html" class="nav-brand">
           <div class="brand-mark">
-            <img src="assets/logo.jpeg" alt="PertenSer" onerror="this.style.display='none'" />
+            <img src="assets/logo.png" alt="PertenSer" onerror="this.style.display='none'" />
           </div>
           <div class="brand-text">
             <span class="brand-name">Perten<span>Ser</span></span>
@@ -24,11 +34,16 @@
           </div>
         </a>
         
-        <!-- Botão Sanduíche removido da Navbar -->
-
+        <!-- BOTÃO SANDUÍCHE (MOBILE) -->
+        <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        
         <ul class="nav-menu" id="navMenu">
           <li>
-            <a href="index.html" class="active"><i class="fas fa-map"></i> Mapa</a>
+            <a href="index.html" class="active">
+              <i class="fas fa-map"></i> Mapa
+            </a>
           </li>
           <li>
             <button type="button" class="nav-link-btn" id="openRegisterModal">
@@ -36,30 +51,39 @@
             </button>
           </li>
           <li>
-            <a href="configuracao.html"><i class="fas fa-cog"></i> Configurações</a>
+            <a href="configuracao.html">
+              <i class="fas fa-cog"></i> Configurações
+            </a>
           </li>
         </ul>
       </div>
     </nav>
 
-    <!-- BANNER -->
-    <div class="banner-container">
-      <img src="assets/banner.png" alt="Banner Projeto PertenSer" />
-    </div>
-
-    <!-- BOTÃO SANDUÍCHE FLUTUANTE (Posicionado no topo esquerdo) -->
-    <button id="hamburger-trigger" aria-label="Abrir menu lateral">
-      <i class="fas fa-bars"></i>
-    </button>
+    <!-- ===== BANNER HERO - PROJETO PERTENSER ===== -->
+    <section class="hero-banner">
+        <div class="hero-content">
+            <img src="assets/logo.png" alt="PertenSer" class="hero-logo" onerror="this.style.display='none'" />
+            <h1 class="hero-title">Perten<span>Ser</span></h1>
+            <p class="hero-subtitle">Vozes, Identidades e Futuros</p>
+            <div class="hero-tagline">
+                <span class="tag-yellow">🎙️ VOZES<br><small>A escuta que transforma</small></span>
+                <span class="tag-purple">👥 IDENTIDADES<br><small>Quem somos, nossa força</small></span>
+                <span class="tag-orange">🚀 FUTUROS<br><small>Ideias que hoje, mudanças amanhã</small></span>
+                <span class="tag-pink">🤝 JUNTOS<br><small>Construímos possibilidades</small></span>
+            </div>
+            <div class="hero-motto">
+                JUVENTUDE QUE PARTICIPA, TRANSFORMA E FAZ ACONTECER!
+            </div>
+        </div>
+    </section>
 
     <!-- Container Principal -->
     <div class="main-container">
-
-      <!-- SIDEBAR (Menu Sanduíche) -->
+      <!-- Sidebar de Filtros -->
       <aside class="sidebar" id="sidebar">
         <div class="filters-container">
-          <div class="sidebar-actions" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
-            <button type="button" class="btn btn-primary btn-block" id="pickLocationHint">
+          <div class="sidebar-actions">
+            <button type="button" class="btn btn-primary" id="pickLocationHint">
               <i class="fas fa-map-marker-alt"></i> Marcar nova ação
             </button>
             <button type="button" class="btn btn-secondary hidden" id="cancelAddMode">
@@ -70,7 +94,11 @@
 
           <!-- Busca -->
           <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Buscar localização..." />
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Buscar localização..."
+            />
             <button id="searchBtn"><i class="fas fa-search"></i></button>
           </div>
 
@@ -79,47 +107,72 @@
             <label><i class="fas fa-tags"></i> Categoria</label>
             <select id="categoryFilter">
               <option value="all">Todas as categorias</option>
+              <option value="educacao">🎓 Educação</option>
+              <option value="saude">🏥 Saúde</option>
+              <option value="cultura">🎭 Cultura</option>
+              <option value="esporte">⚽ Esporte</option>
+              <option value="assistencia">🤝 Assistência Social</option>
             </select>
           </div>
 
-          <!-- ESTATÍSTICAS EM DROPDOWN -->
+          <!-- Estatísticas -->
           <div class="stats-container" id="statsContainer">
-            <button class="stats-header" id="statsToggle" aria-expanded="false">
-              <span><i class="fas fa-chart-bar"></i> Estatísticas</span>
-              <i class="fas fa-chevron-down"></i>
-            </button>
-            <div class="stats-content" id="statsContentWrapper">
-               <div id="statsContent">
-                  <!-- Gerado Dinamicamente -->
-               </div>
-            </div>
-          </div>
-
-          <!-- Lista de Localizações (Vertical) -->
-          <div class="locations-list" id="locationsList">
-            <div class="list-header">
-              <h3><i class="fas fa-list"></i> Localizações</h3>
-              <span id="listCount">0 encontrados</span>
-            </div>
-            <div id="locationsContainer" class="locations-grid">
-              <!-- Cards gerados dinamicamente -->
+            <h4><i class="fas fa-chart-bar"></i> Estatísticas</h4>
+            <div id="statsContent">
+              <div class="stat-item">
+                <span class="stat-label">Total:</span>
+                <span class="stat-value" id="totalCount">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Educação:</span>
+                <span class="stat-value" id="educacaoCount">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Saúde:</span>
+                <span class="stat-value" id="saudeCount">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Cultura:</span>
+                <span class="stat-value" id="culturaCount">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Esporte:</span>
+                <span class="stat-value" id="esporteCount">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Assistência:</span>
+                <span class="stat-value" id="assistenciaCount">0</span>
+              </div>
             </div>
           </div>
         </div>
       </aside>
 
-      <!-- Conteúdo Principal (Mapa) -->
+      <!-- Conteúdo Principal -->
       <main class="content">
+        <!-- Mapa -->
         <div id="map" class="map-container"></div>
+
+        <!-- Lista de Localizações -->
+        <div class="locations-list" id="locationsList">
+          <div class="list-header">
+            <h3><i class="fas fa-list"></i> Localizações</h3>
+            <span id="listCount">0 encontrados</span>
+          </div>
+          <div id="locationsContainer" class="locations-grid">
+            <!-- Cards serão gerados dinamicamente -->
+          </div>
+        </div>
       </main>
     </div>
 
-    <!-- MODAIS -->
     <div class="modal-backdrop" id="registerModal">
       <div class="modal-card">
         <div class="modal-header">
           <h3><i class="fas fa-plus-circle"></i> Nova ação inclusiva</h3>
-          <button type="button" class="modal-close" id="closeRegisterModal"><i class="fas fa-times"></i></button>
+          <button type="button" class="modal-close" id="closeRegisterModal">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
         <form id="locationFormModal" class="modal-form">
           <div class="form-grid">
@@ -137,29 +190,31 @@
             <textarea id="actionDescription" name="actionDescription" rows="3"></textarea>
           </div>
          <div class="form-grid">
-            <div class="form-group">
-                <label for="publicTarget">Público-alvo</label>
-                <input id="publicTarget" name="publicTarget" />
-            </div>
-            <div class="form-group">
-                <label for="professionals">Profissionais</label>
-                <input id="professionals" name="professionals" />
-            </div>
-        </div>
-        <div class="form-grid">
-            <div class="form-group">
-                <label for="contactEmail">Email</label>
-                <input id="contactEmail" name="contactEmail" type="email" placeholder="contato@exemplo.com" />
-            </div>
-            <div class="form-group">
-                <label for="contactPhone">Telefone</label>
-                <input id="contactPhone" name="contactPhone" type="tel" placeholder="(88) 99999-9999" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="responsible">Responsável</label>
-            <input id="responsible" name="responsible" placeholder="Nome da pessoa responsável" />
-        </div>
+    <div class="form-group">
+        <label for="publicTarget">Público-alvo</label>
+        <input id="publicTarget" name="publicTarget" />
+    </div>
+    <div class="form-group">
+        <label for="professionals">Profissionais</label>
+        <input id="professionals" name="professionals" />
+    </div>
+</div>
+
+<!-- NOVOS CAMPOS DE IDENTIFICAÇÃO -->
+<div class="form-grid">
+    <div class="form-group">
+        <label for="contactEmail">Email</label>
+        <input id="contactEmail" name="contactEmail" type="email" placeholder="contato@exemplo.com" />
+    </div>
+    <div class="form-group">
+        <label for="contactPhone">Telefone</label>
+        <input id="contactPhone" name="contactPhone" type="tel" placeholder="(88) 99999-9999" />
+    </div>
+</div>
+<div class="form-group">
+    <label for="responsible">Responsável</label>
+    <input id="responsible" name="responsible" placeholder="Nome da pessoa responsável" />
+</div>
           <div class="form-grid">
             <div class="form-group">
               <label for="address">Endereço</label>
@@ -205,19 +260,14 @@
       <div class="modal-card details-modal-card">
         <div class="modal-header">
           <h3 id="detailsModalTitle">Detalhes da ação</h3>
-          <button type="button" class="modal-close" id="closeDetailsModal"><i class="fas fa-times"></i></button>
+          <button type="button" class="modal-close" id="closeDetailsModal">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
         <div id="detailsModalContent" class="details-modal-content"></div>
         <div id="detailsModalImages" class="details-modal-images"></div>
       </div>
     </div>
-
-    <!-- RODAPÉ -->
-    <footer class="site-footer">
-        <div class="footer-img-container">
-            <img src="assets/rodape.png" alt="Rodapé com informações do projeto" />
-        </div>
-    </footer>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -226,11 +276,11 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
-    <script src="js/config.js?v=20260703"></script>
-    <script src="js/logger.js?v=20260703"></script>
-    <script src="js/utils.js?v=20260703"></script>
-    <script src="js/api.js?v=20260703"></script>
-    <script src="js/mapa.js?v=20260703"></script>
-    <script src="js/app.js?v=20260703"></script>
+    <script src="js/config.js?v=20261019"></script>
+    <script src="js/logger.js?v=20261019"></script>
+    <script src="js/utils.js?v=20261019"></script>
+    <script src="js/api.js?v=20261019"></script>
+    <script src="js/mapa.js?v=20261019"></script>
+    <script src="js/app.js?v=20261019"></script>
   </body>
 </html>
