@@ -1,6 +1,6 @@
 /**
  * Aplicação Principal - Projeto PertenSer
- * Versão: 1.0.0
+ * Versão: 1.1.0 - Correção de imagens
  */
 
 const APP_STATE = {
@@ -8,6 +8,9 @@ const APP_STATE = {
   uploadFiles: [],
   pendingLocation: null,
 };
+
+// Placeholder SVG (fallback para imagens quebradas)
+const PLACEHOLDER_IMG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%230d2b45' width='400' height='300'/%3E%3Ctext fill='%23F4C542' font-family='Arial' font-size='24' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3ESem Imagem%3C/text%3E%3C/svg%3E";
 
 // ===== INICIALIZAÇÃO =====
 document.addEventListener("DOMContentLoaded", async () => {
@@ -48,26 +51,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // ===== EVENTOS =====
 function setupEvents() {
-  const hamburgerTrigger = document.getElementById("hamburger-trigger");
-  const sidebar = document.getElementById("sidebar");
-
-  // --- NOVA LÓGICA DO BOTÃO SANDUÍCHE FLUTUANTE ---
-  if (hamburgerTrigger && sidebar) {
-    hamburgerTrigger.addEventListener("click", () => {
-      sidebar.classList.toggle("open");
-      // Mudar o ícone do botão (X ou Hambúrguer)
-      const icon = hamburgerTrigger.querySelector("i");
-      if (sidebar.classList.contains("open")) {
-        icon.className = "fas fa-times";
-      } else {
-        icon.className = "fas fa-bars";
-      }
-    });
-  }
-
-  // Lógica do menu mobile antigo (para os links da navbar)
   const navToggle = document.getElementById("navToggle");
   const navMenu = document.getElementById("navMenu");
+
   if (navToggle && navMenu) {
     navToggle.addEventListener("click", () => {
       navMenu.classList.toggle("active");
@@ -214,39 +200,6 @@ function setupEvents() {
       openModal();
     }
   });
-
-  // ===== EVENTO PARA O DROPDOWN DE ESTATÍSTICAS =====
-  const statsToggle = document.getElementById("statsToggle");
-  if (statsToggle) {
-    statsToggle.addEventListener("click", () => {
-        const content = document.getElementById("statsContentWrapper");
-        const isExpanded = statsToggle.getAttribute("aria-expanded") === "true";
-        
-        statsToggle.setAttribute("aria-expanded", !isExpanded);
-        if (content) {
-            content.classList.toggle("open");
-        }
-    });
-  }
-
-  // ===== CORREÇÃO DO REDIMENSIONAMENTO DO MAPA =====
-  // Ajusta o mapa quando a janela é redimensionada ou a sidebar abre/fecha
-  window.addEventListener("resize", () => {
-    if (MapaApp.map) {
-      setTimeout(() => MapaApp.map.invalidateSize(), 100);
-    }
-  });
-
-  // Observa mudanças no tamanho do container do mapa
-  const mapContainer = document.querySelector(".map-container");
-  if (mapContainer && window.ResizeObserver) {
-    const resizeObserver = new ResizeObserver(() => {
-      if (MapaApp.map) {
-        MapaApp.map.invalidateSize();
-      }
-    });
-    resizeObserver.observe(mapContainer);
-  }
 }
 
 function populateCategoryFilter(categories) {
@@ -348,7 +301,7 @@ function openDetailsModal(location) {
     const categoryName = category ? category.nome : location.categoria;
     const categoryColor = location.cor_pin || (category ? category.cor : "#3498db");
     const imageHtml = location.imagens && location.imagens.length > 0
-      ? `<img src="${location.imagens[0]}" alt="${Utils.sanitizeHTML(location.titulo || "Imagem")}" class="details-modal-image">`
+      ? `<img src="${location.imagens[0]}" alt="${Utils.sanitizeHTML(location.titulo || "Imagem")}" class="details-modal-image" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'">`
       : "";
 
     content.innerHTML = `
@@ -367,7 +320,7 @@ function openDetailsModal(location) {
     if (location.imagens && location.imagens.length > 1) {
       images.innerHTML = location.imagens
         .slice(1)
-        .map((imageUrl) => `<img src="${imageUrl}" alt="Foto da ação" class="details-modal-thumb">`)
+        .map((imageUrl) => `<img src="${imageUrl}" alt="Foto da ação" class="details-modal-thumb" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'">`)
         .join("");
     } else {
       images.innerHTML = "";
@@ -502,23 +455,23 @@ async function handleSubmit(event) {
 
   try {
     const locationData = {
-    titulo: document.getElementById("actionName").value.trim(),
-    descricao: document.getElementById("actionDescription").value.trim(),
-    endereco: document.getElementById("address").value.trim(),
-    categoria: document.getElementById("actionCategory").value,
-    publico_alvo: document.getElementById("publicTarget").value.trim(),
-    profissionais: document.getElementById("professionals").value.trim(),
-    cor_pin: document.getElementById("pinColor").value,
-    latitude: resolvedLocation.lat,
-    longitude: resolvedLocation.lng,
-    contato: {
+      titulo: document.getElementById("actionName").value.trim(),
+      descricao: document.getElementById("actionDescription").value.trim(),
+      endereco: document.getElementById("address").value.trim(),
+      categoria: document.getElementById("actionCategory").value,
+      publico_alvo: document.getElementById("publicTarget").value.trim(),
+      profissionais: document.getElementById("professionals").value.trim(),
+      cor_pin: document.getElementById("pinColor").value,
+      latitude: resolvedLocation.lat,
+      longitude: resolvedLocation.lng,
+      contato: {
         telefone: document.getElementById("contactPhone").value.trim(),
         email: document.getElementById("contactEmail").value.trim(),
         site: "",
-    },
-    responsavel: document.getElementById("responsible").value.trim(),
-    horario_funcionamento: "",
-};
+      },
+      responsavel: document.getElementById("responsible").value.trim(),
+      horario_funcionamento: "",
+    };
 
     const result = await API.saveLocation(
       locationData,
@@ -588,8 +541,8 @@ function updateLocationsList(locations) {
 
   if (locations.length === 0) {
     container.innerHTML = `
-      <div class="empty-state" style="text-align:center; padding:20px; color:var(--gray-500);">
-        <i class="fas fa-map-marker-alt" style="font-size:24px; margin-bottom:10px; display:block;"></i>
+      <div class="empty-state">
+        <i class="fas fa-map-marker-alt"></i>
         <p>Nenhuma ação inclusiva cadastrada ainda.</p>
       </div>
     `;
@@ -602,13 +555,14 @@ function updateLocationsList(locations) {
     const categoryName = category ? category.nome : location.categoria;
     const categoryColor = location.cor_pin || (category ? category.cor : "#3498db");
     const imageUrl = location.imagens && location.imagens.length > 0 
-    ? location.imagens[0] 
-    : "https://via.placeholder.com/400x300/0d2b45/F4C542?text=Sem+Imagem";
+      ? location.imagens[0] 
+      : PLACEHOLDER_IMG;
 
     html += `
       <div class="location-card" onclick="window.location.href='detalhes.html?id=${location.id}'">
         <div class="location-card-image">
-          <img src="${imageUrl}" alt="${Utils.sanitizeHTML(location.titulo)}" loading="lazy">
+          <img src="${imageUrl}" alt="${Utils.sanitizeHTML(location.titulo)}" loading="lazy" 
+               onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'">
         </div>
         <div class="location-card-content">
           <h4>${Utils.sanitizeHTML(location.titulo)}</h4>
@@ -628,47 +582,22 @@ function updateLocationsList(locations) {
   container.innerHTML = html;
 }
 
-// ===== ESTATÍSTICAS DINÂMICAS =====
+// ===== ESTATÍSTICAS =====
 async function updateStats() {
   try {
     const stats = await API.getStats();
-    
-    // Atualizar total
-    const totalElement = document.getElementById("totalCount");
-    if (totalElement) {
-      totalElement.textContent = stats.total;
+    const elements = {
+      totalCount: stats.total,
+    };
+
+    for (const [id, value] of Object.entries(elements)) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.textContent = value;
+      }
     }
 
-    const statsContent = document.getElementById("statsContent");
-    if (!statsContent) return;
-    
-    statsContent.innerHTML = '';
-
-    if (Object.keys(stats.categories).length === 0) {
-        statsContent.innerHTML = '<div class="stat-item"><span>Nenhuma categoria encontrada</span></div>';
-        return;
-    }
-
-    let html = '';
-    for (const [id, catData] of Object.entries(stats.categories)) {
-        const icon = catData.icone || '📌';
-        const cor = catData.cor || '#3498db';
-        const nome = catData.nome || id;
-        const total = catData.total || 0;
-
-        html += `
-            <div class="stat-item">
-                <span style="display:flex; align-items:center; gap:4px;">
-                    <span style="color:${cor}">${icon}</span> ${nome}:
-                </span>
-                <span class="stat-value">${total}</span>
-            </div>
-        `;
-    }
-    
-    statsContent.innerHTML = html;
-    
-    Logger.info("Estatísticas atualizadas dinamicamente", stats);
+    Logger.info("Estatísticas atualizadas", stats);
   } catch (error) {
     Logger.error("Erro ao atualizar estatísticas", error);
   }
@@ -681,9 +610,9 @@ function showLoading(show) {
 
   if (show) {
     container.innerHTML = `
-      <div class="loading-container" style="text-align:center; padding:40px;">
-        <div class="spinner" style="margin: 0 auto 10px;"></div>
-        <p style="color: var(--gray-500);">Carregando ações inclusivas...</p>
+      <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Carregando ações inclusivas...</p>
       </div>
     `;
   }
