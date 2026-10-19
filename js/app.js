@@ -550,8 +550,9 @@ function updateLocationsList(locations) {
     const category = MapaApp.categories.find((c) => c.id === location.categoria);
     const categoryName = category ? category.nome : location.categoria;
     const categoryColor = location.cor_pin || (category ? category.cor : "#3498db");
-    const imageUrl = location.imagens && location.imagens.length > 0 ? location.imagens[0] : "assets/placeholder.jpg";
-
+    const imageUrl = location.imagens && location.imagens.length > 0 
+    ? location.imagens[0] 
+    : "https://via.placeholder.com/400x300/0d2b45/F4C542?text=Sem+Imagem";
     html += `
       <div class="location-card" onclick="window.location.href='detalhes.html?id=${location.id}'">
         <div class="location-card-image">
