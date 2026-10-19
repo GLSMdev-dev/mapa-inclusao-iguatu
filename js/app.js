@@ -622,3 +622,69 @@ window.loadData = loadData;
 window.updateStats = updateStats;
 window.closeDetailsModal = closeDetailsModal;
 window.updatePinColorSelection = updatePinColorSelection;
+// ===== CORREÇÃO DO BOTÃO SANDUÍCHE =====
+// Garante que o botão funcione mesmo se o app.js for recarregado
+document.addEventListener("DOMContentLoaded", function() {
+    var navToggle = document.getElementById("navToggle");
+    var navMenu = document.getElementById("navMenu");
+
+    if (!navToggle || !navMenu) {
+        return;
+    }
+
+    // Remove eventos anteriores (se houver)
+    var newToggle = navToggle.cloneNode(true);
+    navToggle.parentNode.replaceChild(newToggle, navToggle);
+    navToggle = newToggle;
+
+    // Adiciona o evento
+    navToggle.addEventListener("click", function(e) {
+        e.stopPropagation();
+        navMenu.classList.toggle("active");
+        
+        var icon = navToggle.querySelector("i");
+        if (icon) {
+            if (navMenu.classList.contains("active")) {
+                icon.className = "fas fa-times";
+            } else {
+                icon.className = "fas fa-bars";
+            }
+        }
+    });
+
+    // Fechar ao clicar em um link
+    var links = navMenu.querySelectorAll("a, button");
+    links.forEach(function(link) {
+        link.addEventListener("click", function() {
+            navMenu.classList.remove("active");
+            var icon = navToggle.querySelector("i");
+            if (icon) {
+                icon.className = "fas fa-bars";
+            }
+        });
+    });
+
+    // Fechar ao clicar fora
+    document.addEventListener("click", function(e) {
+        if (!navMenu.contains(e.target) && !navToggle.contains(e.target)) {
+            if (navMenu.classList.contains("active")) {
+                navMenu.classList.remove("active");
+                var icon = navToggle.querySelector("i");
+                if (icon) {
+                    icon.className = "fas fa-bars";
+                }
+            }
+        }
+    });
+
+    // Fechar ao redimensionar para desktop
+    window.addEventListener("resize", function() {
+        if (window.innerWidth > 768) {
+            navMenu.classList.remove("active");
+            var icon = navToggle.querySelector("i");
+            if (icon) {
+                icon.className = "fas fa-bars";
+            }
+        }
+    });
+});
